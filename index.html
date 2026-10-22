@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ClimaSphere AI</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌱</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&family=Noto+Nastaliq+Urdu&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
+<style>
+:root{color-scheme:dark;--bg:#0b1210;--card:#111c18;--line:#1f3029;--tx:#e8f3ee;--mu:#8fa89d;--ac:#3ddc84;--wa:#f5b942;--bad:#ff6b6b}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at 50% 100%,#12382a 0,var(--bg) 60%);background-attachment:fixed;color:var(--tx);font:15px/1.55 Inter,system-ui,sans-serif}
+#bg{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+main{position:relative;z-index:1;max-width:980px;margin:auto;padding:28px 16px 80px}
+h1{font-size:clamp(34px,6vw,58px);line-height:1.05;margin:36px 0 12px;font-weight:800;letter-spacing:-.02em}
+h1 em{font-style:normal;color:var(--ac)}
+.sub{color:var(--mu);max-width:600px;margin:0 0 28px}
+nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+nav button,.btn{background:var(--card);border:1px solid var(--line);color:var(--tx);padding:10px 18px;border-radius:12px;font:inherit;font-weight:500;cursor:pointer}
+nav button.on,.btn.pri{background:var(--ac);color:#06210f;border-color:var(--ac);font-weight:700}
+button:focus-visible,input:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.card{background:rgba(17,28,24,.85);backdrop-filter:blur(8px);border:1px solid var(--line);border-radius:18px;padding:20px;margin-bottom:16px}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+input[type=text]{flex:1;min-width:180px;background:#0c1613;border:1px solid var(--line);color:var(--tx);padding:11px 14px;border-radius:12px;font:inherit}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:16px}
+.k{background:#0c1613;border:1px solid var(--line);border-radius:14px;padding:14px}
+.k b{display:block;font-size:26px;font-weight:800}.k span{color:var(--mu);font-size:13px}
+.g{color:var(--ac)}.y{color:var(--wa)}.r{color:var(--bad)}
+canvas.v{max-width:100%;border-radius:14px;border:1px solid var(--line)}
+.note{color:var(--mu);font-size:13px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line)}
+code{font-family:ui-monospace,monospace;font-size:12px;word-break:break-all}
+a{color:var(--ac)}
+section{display:none}section.on{display:block}
+.sm{padding:6px 12px;font-size:13px}
+.warn{border-left:4px solid var(--wa);padding:10px 14px;background:#1d1a0c;border-radius:10px;margin-top:14px}
+.plan{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:14px}
+.plan div{background:#0c1613;border:1px solid var(--line);border-radius:14px;padding:14px}
+select{background:#0c1613;border:1px solid var(--line);color:var(--tx);padding:10px 12px;border-radius:12px;font:inherit}
+[dir=rtl] body{font-family:"Noto Nastaliq Urdu",Inter,sans-serif;line-height:2.1}
+.sm.on{background:var(--ac);color:#06210f;border-color:var(--ac)}
+[dir=rtl] .k b{line-height:1.5}[dir=rtl] .btn,[dir=rtl] nav button{line-height:1.9}
+[dir=rtl] th,[dir=rtl] td{text-align:right;line-height:1.9;padding:12px 6px}
+@media(prefers-reduced-motion:reduce){#bg{display:none}}
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+<main>
+<div class="row" style="justify-content:flex-end"><button class="btn sm" id="lang">اردو</button></div>
+<h1 data-i="h1">Climate evidence you can <em>verify</em>.</h1>
+<p class="sub" data-i="sub">ClimaSphere AI reads live air and weather data, measures crop leaf damage from a photo, estimates the loss, and anchors a tamper-proof certificate on a public blockchain.</p>
+<nav id="tabs">
+<button data-t="air" class="on" data-i="t1">1. Air and weather</button>
+<button data-t="crop" data-i="t2">2. Crop scan</button>
+<button data-t="loss" data-i="t3">3. Loss and payout</button>
+<button data-t="ledger" data-i="t4">4. Ledger</button>
+</nav>
+
+<section id="t-air" class="on"><div class="card">
+<div class="row"><input id="city" type="text" value="Lahore" aria-label="City"><button class="btn pri" id="goAir" data-i="go">Check city</button></div>
+<p class="note" id="airMsg">Live data from Open-Meteo. Enter any city.</p>
+<div class="kpis" id="airK"></div><div id="stoma"></div></div></section>
+
+<section id="t-crop"><div class="card">
+<div class="row"><select id="crop" aria-label="Crop"><option value="banana">Banana</option><option value="tomato">Tomato</option><option value="potato">Potato</option><option value="other">Other crop</option></select>
+<button class="btn" id="smp" data-i="smp">Load sample</button><button class="btn" id="smpH" data-i="smpH">Healthy sample</button><input id="file" type="file" accept="image/*" aria-label="Leaf photo"></div>
+<p class="note">Pick a crop, load a sample or upload a close photo of one leaf. Brown and yellow tissue counts as damage. Everything runs in your browser.</p>
+<div class="row" id="views" style="margin-top:12px"><button class="btn sm" data-v="ov" data-i="v1">Diagnostic overlay</button><button class="btn sm" data-v="mk" data-i="v2">Lesion mask</button><button class="btn sm" data-v="rw" data-i="v3">Raw photo</button></div>
+<canvas id="cv" class="v" hidden></canvas>
+<div class="kpis" id="cropK"></div></div></section>
+
+<section id="t-loss"><div class="card" id="lossBox"><p class="note">Run the air check and the crop scan first.</p></div></section>
+
+<section id="t-ledger"><div class="card">
+<div class="row"><button class="btn pri" id="mk" data-i="mk">Create certificate block</button><button class="btn" id="anc" data-i="anc">Anchor last block on Polygon Amoy</button><button class="btn" id="tam" data-i="tam">Run tamper test</button><button class="btn" id="cert" data-i="cert">Download certificate</button></div>
+<p class="note" id="lMsg">Each block stores the hash of the previous one. Any edit breaks the chain.</p>
+<table><thead><tr><th>#</th><th data-i="c1">City</th><th data-i="c2">Damage</th><th data-i="c3">Trust</th><th data-i="c4">Payout</th><th data-i="c5">Hash</th><th data-i="c6">On-chain</th></tr></thead><tbody id="rows"></tbody></table>
+</div>
+<div class="card"><div class="row"><input id="vh" type="text" placeholder="Paste a block hash to verify"><button class="btn" id="vb" data-i="vb">Verify hash</button></div><p id="vr" class="note"></p></div></section>
+</main>
+
+<script>
+// ---- CONFIG: paste your deployed ClimateLedger address here ----
+const CONTRACT = "";
+const $ = id => document.getElementById(id);
+const S = {air:null, crop:null, loss:null};
+// Illustrative offline samples, used only if the live API fails. Always labelled and never eligible for payout.
+const CACHE={lahore:{city:"Lahore",lat:31.55,lon:74.34,aqi:165,pm25:72,pm10:110,o3:60,no2:40,so2:12,t:27,h:48,pmMax:90},
+ istanbul:{city:"Istanbul",lat:41.01,lon:28.98,aqi:62,pm25:18,pm10:30,o3:70,no2:25,so2:6,t:17,h:72,pmMax:26}};
+const UR={"US AQI":"امریکی AQI","Ozone µg/m³":"اوزون µg/m³","Temperature":"درجہ حرارت","Humidity":"نمی","Peak PM2.5, next 24 h":"PM2.5 کی بلند ترین سطح، اگلے ۲۴ گھنٹے",
+"Leaf damage":"پتے کا نقصان","Healthy":"صحت مند","Stage":"مرحلہ","No damage found":"کوئی نقصان نہیں ملا","Mild":"ہلکا","Moderate":"درمیانہ","Severe":"شدید","Leaf area found":"پتے کا رقبہ",
+"Projected yield loss":"متوقع پیداوار کا نقصان","Loss per acre":"فی ایکڑ نقصان","Trust score":"اعتماد کا اسکور","Eligible":"اہل","Not eligible":"نااہل","Parametric payout":"پیرامیٹرک ادائیگی",
+"Chemical protocol":"کیمیائی علاج","Cultural controls":"زرعی انتظام","Preventative action":"احتیاطی اقدام","Healthy leaf":"صحت مند پتا",
+"Chain valid. All hashes match.":"چین درست ہے۔ تمام ہیش مل رہے ہیں۔","Chain broken at block":"چین اس بلاک پر ٹوٹی ہوئی ہے","Tamper detected in block":"بلاک میں چھیڑ چھاڑ پکڑی گئی",
+"The hash no longer matches.":"ہیش اب مطابقت نہیں رکھتا۔","Your real chain is unchanged.":"آپ کی اصل چین تبدیل نہیں ہوئی۔",
+"Stomatal risk: heavy particles can clog leaf pores and weaken plant defenses against disease. Scout your crop more often.":"سٹومیٹل خطرہ: ذرات پتوں کے مسام بند کر کے بیماری کے خلاف پودے کی مزاحمت کم کر سکتے ہیں۔ فصل کا زیادہ بار معائنہ کریں۔",
+"No leaf detected. Please upload a close photo of a single leaf.":"پتا نہیں ملا۔ براہِ کرم ایک پتے کی قریب سے تصویر اپلوڈ کریں۔",
+"Live data unavailable. Showing illustrative offline sample data.":"لائیو ڈیٹا دستیاب نہیں۔ نمونہ آف لائن ڈیٹا دکھایا جا رہا ہے۔",
+"Could not load data. Check your connection and try again.":"ڈیٹا لوڈ نہیں ہو سکا۔ کنکشن چیک کریں اور دوبارہ کوشش کریں۔","Offline sample data":"آف لائن نمونہ ڈیٹا"};
+const tr=x=>(typeof LG!=="undefined"&&LG==="ur"&&UR[x])||x;
+
+// ---- background: rising glowing seeds ----
+(function(){const c=$("bg"),x=c.getContext("2d");let w,h,p=[];
+function rs(){w=c.width=innerWidth;h=c.height=innerHeight}rs();addEventListener("resize",rs);
+for(let i=0;i<110;i++)p.push({x:Math.random()*w,y:Math.random()*h,r:1+Math.random()*2.5,v:.15+Math.random()*.4,a:Math.random()});
+(function f(){x.clearRect(0,0,w,h);for(const d of p){d.y-=d.v;d.a+=.01;if(d.y<-5){d.y=h+5;d.x=Math.random()*w}
+x.globalAlpha=.25+.45*Math.abs(Math.sin(d.a));x.fillStyle="#6dffa8";x.shadowColor="#3ddc84";x.shadowBlur=10;
+x.beginPath();x.arc(d.x,d.y,d.r,0,6.3);x.fill()}requestAnimationFrame(f)})()})();
+
+// ---- tabs ----
+$("tabs").onclick = e => { const t=e.target.dataset.t; if(!t) return;
+  document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on",b===e.target));
+  document.querySelectorAll("section").forEach(s=>s.classList.toggle("on",s.id==="t-"+t));
+  if(t==="loss") renderLoss(); if(t==="ledger") renderChain(); };
+
+const k = (v,l,c="") => `<div class="k"><b class="${c}">${v}</b><span>${tr(l)}</span></div>`;
+const getJSON = async u => { const r=await fetch(u); if(!r.ok) throw new Error("Request failed"); return r.json(); };
+
+// ---- 1. air and weather ----
+function renderAir(){const A=S.air;if(!A)return;const cl=A.aqi<=50?"g":A.aqi<=100?"y":"r";
+  $("airK").innerHTML=k(A.aqi,"US AQI",cl)+k(A.pm25,"PM2.5 µg/m³")+k(A.pm10,"PM10 µg/m³")+k(A.o3,"Ozone µg/m³")+k(A.no2,"NO₂ µg/m³")+k(A.so2,"SO₂ µg/m³")+k(A.t+"°C","Temperature")+k(A.h+"%","Humidity")+k(A.pmMax,"Peak PM2.5, next 24 h",A.pmMax>55?"r":"g");
+  $("stoma").innerHTML=(A.cached?'<div class="warn">'+tr("Offline sample data")+'</div>':"")+((A.pm25>35||A.aqi>100)?'<div class="warn">'+tr("Stomatal risk: heavy particles can clog leaf pores and weaken plant defenses against disease. Scout your crop more often.")+'</div>':"")}
+$("goAir").onclick = async () => {
+  const m=$("airMsg"); m.textContent="Loading…";
+  try{
+    const g=(await getJSON("https://geocoding-api.open-meteo.com/v1/search?count=1&name="+encodeURIComponent($("city").value))).results?.[0];
+    if(!g){m.textContent="City not found. Check the spelling and try again.";return}
+    const q=`latitude=${g.latitude}&longitude=${g.longitude}`;
+    const [a,w]=await Promise.all([
+      getJSON(`https://air-quality-api.open-meteo.com/v1/air-quality?${q}&current=us_aqi,pm2_5,pm10,ozone,nitrogen_dioxide,sulphur_dioxide&hourly=pm2_5&forecast_days=2`),
+      getJSON(`https://api.open-meteo.com/v1/forecast?${q}&current=temperature_2m,relative_humidity_2m`)]);
+    const c=a.current, pmMax=Math.max(...a.hourly.pm2_5.slice(0,24).filter(v=>v!=null));
+    S.air={city:g.name,lat:+g.latitude.toFixed(3),lon:+g.longitude.toFixed(3),aqi:c.us_aqi,pm25:c.pm2_5,pm10:c.pm10,o3:c.ozone,no2:c.nitrogen_dioxide,so2:c.sulphur_dioxide,t:w.current.temperature_2m,h:w.current.relative_humidity_2m,pmMax};
+    renderAir();
+    m.textContent=`${g.name}, ${g.country||""}. Live reading loaded.`;
+  }catch{const f=CACHE[$("city").value.trim().toLowerCase()];
+    if(f){S.air={...f,cached:true};renderAir();m.textContent=tr("Live data unavailable. Showing illustrative offline sample data.")}
+    else m.textContent=tr("Could not load data. Check your connection and try again.")}
+};
+
+// ---- 2. crop scan (HSV segmentation) ----
+const TX={
+banana:{d:"Black Sigatoka",chem:"Protectant and systemic fungicides such as mancozeb, propiconazole or azoxystrobin, rotated between classes. Follow the product label for rates and intervals.",cult:"Remove and destroy badly spotted leaves, improve spacing and drainage, and water at the base instead of overhead.",prev:"Scout weekly and watch for humidity above 80% with warm nights, which speeds spore spread."},
+tomato:{d:"Late Blight",chem:"Protectant fungicides such as chlorothalonil or copper, or metalaxyl-based products, rotated by class. Follow the label for rates.",cult:"Remove infected plants, stake and prune for airflow, and avoid wetting leaves late in the day.",prev:"Late blight thrives in cool, wet weather. Check the forecast and protect before long wet spells."},
+potato:{d:"Early Blight",chem:"Fungicides such as chlorothalonil, mancozeb or azoxystrobin, rotated by class. Follow the label for rates.",cult:"Rotate crops, clear old plant debris, keep plants well fed and avoid drought stress.",prev:"Watch warm, humid spells and start protective sprays when the first spots appear."},
+other:{d:"Leaf damage",chem:"Identify the cause with a local agriculture extension officer before spraying.",cult:"Remove badly affected leaves, improve airflow and avoid overhead watering.",prev:"Track humidity and rainfall, and rescan every few days."}};
+function hsv(r,g,b){r/=255;g/=255;b/=255;const M=Math.max(r,g,b),n=Math.min(r,g,b),d=M-n;let h=0;
+  if(d){h=M===r?((g-b)/d)%6:M===g?(b-r)/d+2:(r-g)/d+4;h*=60;if(h<0)h+=360}return[h,M?d/M:0,M]}
+function analyze(c){const x=c.getContext("2d",{willReadFrequently:true}),W=c.width,H=c.height,raw=x.getImageData(0,0,W,H),p=raw.data,n=W*H,L=new Uint8Array(n),M=new Uint8Array(n),E=new Uint8Array(n);let leaf=0,les=0;
+  for(let j=0;j<n;j++){const i=j*4,[h,s2,v]=hsv(p[i],p[i+1],p[i+2]);
+    if(h>=15&&h<=65&&s2>.35&&v>.25){M[j]=1;L[j]=1;les++}else if(h>65&&h<170&&s2>.25&&v>.15){L[j]=1;leaf++}}
+  for(let y=1;y<H-1;y++)for(let q=1;q<W-1;q++){const j=y*W+q;if(L[j]&&(!L[j-1]||!L[j+1]||!L[j-W]||!L[j+W]))E[j]=1}
+  S.vis={raw,M,E,W,H,c};
+  const tot=leaf+les,cover=tot/n*100,sev=tot?les/tot*100:0,st=sev<10?1:sev<=30?2:3;
+  if(cover<2){S.crop=null;$("cropK").innerHTML='<div class="warn">'+tr("No leaf detected. Please upload a close photo of a single leaf.")+'</div>';return}
+  S.crop={sev:+sev.toFixed(1),cover:+cover.toFixed(1),stage:st,name:$("crop").value};
+  renderCropK();
+  paint("ov")}
+function renderCropK(){const C=S.crop;if(!C)return;const sev=C.sev,cl=sev<10?"g":sev<=30?"y":"r";
+  $("cropK").innerHTML=k(sev+"%","Leaf damage",cl)+k(sev<1?tr("Healthy"):tr("Stage")+" "+C.stage,sev<1?"No damage found":["Mild","Moderate","Severe"][C.stage-1],cl)+k(C.cover+"%","Leaf area found")}
+function paint(m){const V=S.vis;if(!V)return;document.querySelectorAll("#views button").forEach(b=>b.classList.toggle("on",b.dataset.v===m));const o=new ImageData(new Uint8ClampedArray(V.raw.data),V.W,V.H),p=o.data;
+  for(let j=0;j<V.W*V.H;j++){const i=j*4;
+    if(m==="mk"){p[i]=p[i+1]=p[i+2]=V.M[j]?255:0}else if(m==="rw"){}
+    else if(m==="ov"){if(V.E[j]){p[i]=255;p[i+1]=221;p[i+2]=0}else if(V.M[j]){p[i]=255;p[i+1]=50;p[i+2]=50}}}
+  V.c.getContext("2d").putImageData(o,0,0)}
+$("views").onclick=e=>{if(e.target.dataset.v)paint(e.target.dataset.v)};
+function sample(kind){const c=$("cv"),x=c.getContext("2d");c.width=480;c.height=360;c.hidden=false;
+  let sd=7;const R=()=>(sd=(sd*16807)%2147483647)/2147483647;
+  x.fillStyle="#d8d2c4";x.fillRect(0,0,480,360);x.save();x.translate(240,180);x.rotate(-.35);
+  x.beginPath();x.ellipse(0,0,190,105,0,0,6.3);x.fillStyle="#3f8f3a";x.fill();x.clip();
+  x.strokeStyle="#7fc06f";x.lineWidth=4;x.beginPath();x.moveTo(-190,0);x.lineTo(190,0);x.stroke();
+  const n={banana:45,tomato:7,potato:16,healthy:0}[kind];
+  for(let i=0;i<n;i++){const px=(R()-.5)*330,py=(R()-.5)*170;x.beginPath();
+    if(kind==="banana"){x.ellipse(px,py,16+R()*14,2.5+R()*2,0,0,6.3);x.fillStyle="#7a4a1e"}
+    else if(kind==="tomato"){x.ellipse(px,py,22+R()*20,18+R()*14,R(),0,6.3);x.fillStyle="#6b3f1a"}
+    else{x.arc(px,py,7+R()*8,0,6.3);x.fillStyle="#8a5524";x.fill();x.beginPath();x.arc(px,py,14+R()*6,0,6.3);x.strokeStyle="#c9a227";x.lineWidth=3;x.stroke();continue}
+    x.fill()}
+  x.restore();analyze(c)}
+$("smp").onclick=()=>sample($("crop").value==="other"?"tomato":$("crop").value);
+$("smpH").onclick=()=>sample("healthy");
+$("file").onchange=e=>{const f=e.target.files[0];if(!f)return;const img=new Image();
+  img.onload=()=>{const c=$("cv"),s=Math.min(1,480/Math.max(img.width,img.height));c.width=img.width*s;c.height=img.height*s;c.hidden=false;c.getContext("2d").drawImage(img,0,0,c.width,c.height);analyze(c)};
+  img.src=URL.createObjectURL(f)};
+
+// ---- 3. loss, trust score, payout trigger ----
+function calc(){
+  const A=S.air,C=S.crop; if(!A||!C) return null;
+  const o3x=Math.max(0,A.o3-100)*.02;                       // ozone stress, heuristic
+  const yl=+(C.sev*.75+3.2+o3x).toFixed(1);                 // heuristic yield-loss model
+  const lo=Math.round(12*C.sev+80),hi=Math.round(18*C.sev+140);
+  let conf=80;const why=[];
+  if(C.cover<2){conf-=40;why.push("Little leaf area found in the photo")}
+  if(C.sev>=10&&A.h<45&&A.o3<80){conf-=35;why.push("Damage is high but humidity and ozone do not support it")}
+  if(C.sev>=10&&A.h>=70){conf+=10;why.push("High humidity supports fungal spread")}
+  if(A.cached){conf=Math.min(conf,40);why.push("Offline sample data, not a live reading")}
+  conf=Math.max(0,Math.min(100,conf));
+  const elig=C.sev>=10&&(A.h>=70||A.o3>=100)&&conf>=60;
+  return S.loss={yl,lo,hi,conf,why,elig};
+}
+function renderLoss(){const L=calc(),b=$("lossBox");
+  if(!L){b.innerHTML='<p class="note">Run the air check and the crop scan first.</p>';return}
+  const A=S.air,C=S.crop,T=TX[C.name]||TX.other,dp=(A.t-(100-A.h)/5).toFixed(1),sick=C.sev>=1;
+  b.innerHTML=`<div class="kpis">${k(L.yl+"%","Projected yield loss",L.yl>15?"r":"y")}${k("$"+L.lo+"–"+L.hi,"Loss per acre")}${k(L.conf+"/100","Trust score",L.conf>=60?"g":"r")}${k(L.elig?"Eligible":"Not eligible","Parametric payout",L.elig?"g":"y")}</div>
+  <p class="note">${L.why.join(". ")||"No consistency flags."}</p>
+  <h3>${sick?T.d:tr("Healthy leaf")} (${C.name})</h3>
+  ${sick?`<div class="plan"><div><b>${tr("Chemical protocol")}</b><p class="note">${T.chem}</p></div><div><b>${tr("Cultural controls")}</b><p class="note">${T.cult}</p></div><div><b>${tr("Preventative action")}</b><p class="note">${T.prev} Dew point now is about ${dp}°C at ${A.h}% humidity.</p></div></div>`:'<p class="note">No treatment needed. Rescan in a few days.</p>'}
+  <p class="note">Payout rule: damage of 10% or more, plus humidity of 70% or more or ozone of 100 µg/m³ or more, plus a trust score of 60 or more. Loss formulas are heuristics for demonstration. Treatment notes are general guidance, so confirm products and rates with a local agriculture extension officer.</p>`}
+
+// ---- 4. ledger ----
+let chain=[];try{chain=JSON.parse(localStorage.getItem("cs_chain3")||"[]")}catch{}
+const save=()=>{try{localStorage.setItem("cs_chain3",JSON.stringify(chain))}catch{}};
+async function sha(s){const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("")}
+const body=b=>JSON.stringify([b.i,b.ts,b.city,b.crop,b.dis,b.lat,b.lon,b.aqi,b.pm25,b.o3,b.t,b.h,b.sev,b.loss,b.conf,b.elig,b.src,b.prev]);
+async function validate(c){for(let i=0;i<c.length;i++){
+  if(await sha(body(c[i]))!==c[i].hash) return i+1;
+  if(c[i].prev!==(i?c[i-1].hash:"0".repeat(64))) return i+1}return 0}
+$("mk").onclick=async()=>{const L=calc(),A=S.air,C=S.crop;
+  if(!L){$("lMsg").textContent="Run the air check and the crop scan first.";return}
+  const b={i:chain.length+1,ts:new Date().toISOString(),city:A.city,crop:C.name,dis:C.sev<1?"Healthy":(TX[C.name]||TX.other).d,lat:A.lat,lon:A.lon,aqi:A.aqi,pm25:A.pm25,o3:A.o3,t:A.t,h:A.h,sev:C.sev,loss:L.yl,conf:L.conf,elig:L.elig,src:A.cached?"offline":"live",prev:chain.length?chain[chain.length-1].hash:"0".repeat(64)};
+  b.hash=await sha(body(b));chain.push(b);save();renderChain();$("lMsg").textContent="Block "+b.i+" created."};
+async function renderChain(){const bad=await validate(chain);
+  $("rows").innerHTML=chain.map(b=>`<tr><td>${b.i}</td><td>${b.city}, ${b.crop}</td><td>${b.sev}%</td><td>${b.conf}</td><td>${b.elig?"Yes":"No"}</td><td><code>${b.hash.slice(0,14)}…</code></td><td>${b.tx?`<a target="_blank" rel="noopener" href="https://amoy.polygonscan.com/tx/${b.tx}">View</a>`:"–"}</td></tr>`).join("")||'<tr><td colspan="7" class="note">No blocks yet.</td></tr>';
+  if(chain.length)$("lMsg").innerHTML=bad?`<span class="r">${tr("Chain broken at block")} ${bad}.</span>`:'<span class="g">'+tr("Chain valid. All hashes match.")+'</span>'}
+$("tam").onclick=async()=>{if(!chain.length){$("lMsg").textContent="Create a block first.";return}
+  const c=JSON.parse(JSON.stringify(chain));c[c.length-1].sev+=10;const bad=await validate(c);
+  $("lMsg").innerHTML=`<span class="r">${tr("Tamper detected in block")} ${bad}. ${tr("The hash no longer matches.")}</span> ${tr("Your real chain is unchanged.")}`};
+$("vb").onclick=async()=>{const q=$("vh").value.trim().toLowerCase(),b=chain.find(x=>q&&x.hash.startsWith(q));
+  if(!b){$("vr").textContent="No block with that hash in this browser.";return}
+  const ok=await sha(body(b))===b.hash;$("vr").innerHTML=ok?`<span class="g">Valid. Block ${b.i} data is untampered.</span>`:'<span class="r">Invalid. Data does not match the hash.</span>'};
+$("anc").onclick=async()=>{const b=chain[chain.length-1],m=$("lMsg");
+  if(!b){m.textContent="Create a block first.";return}
+  if(!CONTRACT){m.textContent="Set the CONTRACT address in index.html first.";return}
+  if(!window.ethereum){m.textContent="Install MetaMask to anchor on-chain.";return}
+  try{m.textContent="Confirm in your wallet…";
+    try{await ethereum.request({method:"wallet_switchEthereumChain",params:[{chainId:"0x13882"}]})}
+    catch{await ethereum.request({method:"wallet_addEthereumChain",params:[{chainId:"0x13882",chainName:"Polygon Amoy",nativeCurrency:{name:"POL",symbol:"POL",decimals:18},rpcUrls:["https://rpc-amoy.polygon.technology"],blockExplorerUrls:["https://amoy.polygonscan.com"]}]})}
+    const s=await new ethers.BrowserProvider(ethereum).getSigner();
+    const tx=await new ethers.Contract(CONTRACT,["function anchor(bytes32,bool)"],s).anchor("0x"+b.hash,b.elig);
+    await tx.wait();b.tx=tx.hash;save();renderChain();m.textContent="Anchored on Polygon Amoy."}
+  catch{m.textContent="Transaction failed or was cancelled. Check that your wallet has test POL."}};
+$("cert").onclick=()=>{const b=chain[chain.length-1];if(!b){$("lMsg").textContent="Create a block first.";return}
+  const t=["CLIMASPHERE AI - VERIFICATION CERTIFICATE","=======================================","Block:        "+b.i,"Time (UTC):   "+b.ts,"Location:     "+b.city+" ("+b.lat+", "+b.lon+")",
+  "Telemetry:    AQI "+b.aqi+" | PM2.5 "+b.pm25+" | O3 "+b.o3+" | "+b.t+" C | "+b.h+"% RH","Diagnosis:    "+b.crop+" - "+b.dis+" - damage "+b.sev+"%","Yield loss:   "+b.loss+"%","Trust score:  "+b.conf+"/100",
+  "Data source:  "+b.src,"Payout rule:  "+(b.elig?"ELIGIBLE":"NOT ELIGIBLE"),"Prev hash:    "+b.prev,"SHA-256:      "+b.hash,"On-chain tx:  "+(b.tx?"https://amoy.polygonscan.com/tx/"+b.tx:"not anchored"),"",
+  "Verify: SHA-256 of the JSON array [index, time, city, crop, disease, lat, lon, aqi, pm25, o3, temp, rh, damage, loss, trust, eligible, source, prev hash]."].join("\n");
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([t],{type:"text/plain"}));a.download="climasphere-certificate-"+b.i+".txt";a.click()};
+
+// ---- English / Urdu ----
+const I={en:{h1:"Climate evidence you can <em>verify</em>.",sub:"ClimaSphere AI reads live air and weather data, measures crop leaf damage from a photo, estimates the loss, and anchors a tamper-proof certificate on a public blockchain.",t1:"1. Air and weather",t2:"2. Crop scan",t3:"3. Loss and payout",t4:"4. Ledger",go:"Check city",smp:"Load sample",smpH:"Healthy sample",mk:"Create certificate block",anc:"Anchor last block on Polygon Amoy",tam:"Run tamper test",cert:"Download certificate",vb:"Verify hash",c1:"City",c2:"Damage",c3:"Trust",c4:"Payout",c5:"Hash",c6:"On-chain",v1:"Diagnostic overlay",v2:"Lesion mask",v3:"Raw photo"},
+ur:{h1:"موسمیاتی شواہد جن کی آپ <em>تصدیق</em> کر سکتے ہیں۔",sub:"کلائمہ اسفیئر لائیو ہوا اور موسم کا ڈیٹا پڑھتا ہے، پتے کے نقصان کو تصویر سے ناپتا ہے، نقصان کا اندازہ لگاتا ہے اور چھیڑ چھاڑ سے محفوظ سرٹیفکیٹ کو بلاک چین پر درج کرتا ہے۔",t1:"۱۔ ہوا اور موسم",t2:"۲۔ فصل کا معائنہ",t3:"۳۔ نقصان اور ادائیگی",t4:"۴۔ لیجر",go:"شہر چیک کریں",smp:"نمونہ لوڈ کریں",smpH:"صحت مند نمونہ",mk:"سرٹیفکیٹ بلاک بنائیں",anc:"آخری بلاک بلاک چین پر درج کریں",tam:"چھیڑ چھاڑ کا ٹیسٹ",cert:"سرٹیفکیٹ ڈاؤن لوڈ کریں",vb:"ہیش کی تصدیق کریں",c1:"شہر",c2:"نقصان",c3:"اعتماد",c4:"ادائیگی",c5:"ہیش",c6:"بلاک چین",v1:"تشخیصی اوورلے",v2:"زخم کا ماسک",v3:"اصل تصویر"}};
+let LG="en";
+function applyLang(){document.documentElement.dir=LG==="ur"?"rtl":"ltr";document.documentElement.lang=LG;
+  document.querySelectorAll("[data-i]").forEach(e=>e.innerHTML=I[LG][e.dataset.i]);$("lang").textContent=LG==="en"?"اردو":"English";renderAir();renderCropK();renderChain();if($("t-loss").classList.contains("on"))renderLoss()}
+$("lang").onclick=()=>{LG=LG==="en"?"ur":"en";applyLang()};
+renderChain();
+</script>
+</body>
+</html>
