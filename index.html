@@ -8,11 +8,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&family=Noto+Nastaliq+Urdu&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
 <style>
-:root{color-scheme:dark;--bg:#0b1210;--card:#111c18;--line:#1f3029;--tx:#e8f3ee;--mu:#8fa89d;--ac:#3ddc84;--wa:#f5b942;--bad:#ff6b6b}
+:root{color-scheme:dark;--bg:#090d0b;--card:#0f1412;--line:#1b2a24;--tx:#f1f7f4;--mu:#8ea39a;--ac:#10b981;--wa:#f5b942;--bad:#ff6b6b}
 *{box-sizing:border-box}
-body{margin:0;background:radial-gradient(ellipse at 50% 100%,#12382a 0,var(--bg) 60%);background-attachment:fixed;color:var(--tx);font:15px/1.55 Inter,system-ui,sans-serif}
+body{margin:0;background:radial-gradient(ellipse at 50% 100%,#0c2a20 0,var(--bg) 60%);background-attachment:fixed;color:var(--tx);font:15px/1.55 Inter,system-ui,sans-serif}
 #bg{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
-main{position:relative;z-index:1;max-width:980px;margin:auto;padding:28px 16px 80px}
+main{position:relative;z-index:1;max-width:1120px;margin:auto;padding:28px 16px 80px}
 h1{font-size:clamp(34px,6vw,58px);line-height:1.05;margin:36px 0 12px;font-weight:800;letter-spacing:-.02em}
 h1 em{font-style:normal;color:var(--ac)}
 .sub{color:var(--mu);max-width:600px;margin:0 0 28px}
@@ -43,20 +43,67 @@ select{background:#0c1613;border:1px solid var(--line);color:var(--tx);padding:1
 .sm.on{background:var(--ac);color:#06210f;border-color:var(--ac)}
 [dir=rtl] .k b{line-height:1.5}[dir=rtl] .btn,[dir=rtl] nav button{line-height:1.9}
 [dir=rtl] th,[dir=rtl] td{text-align:right;line-height:1.9;padding:12px 6px}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+.top{position:sticky;top:0;z-index:20;backdrop-filter:blur(14px);background:rgba(9,13,11,.7);border-bottom:1px solid var(--line)}
+.bar{max-width:1120px;margin:auto;padding:12px 16px;display:flex;align-items:center;gap:16px;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:8px;color:var(--tx);font-weight:700;text-decoration:none}
+.links{display:flex;gap:22px}.links a{color:var(--mu);text-decoration:none;font-size:14px}.links a:hover{color:var(--ac)}
+.acts{display:flex;gap:10px;align-items:center}
+.cta-s{background:var(--ac);color:#04140c;font-weight:700;border-radius:999px;padding:9px 20px;text-decoration:none;display:inline-block}.cta-s:hover{background:#34d399}
+.cta-s.big,.ghost{padding:13px 26px}
+.ghost{border:1px solid var(--line);color:var(--tx);border-radius:999px;text-decoration:none;background:rgba(15,20,18,.6)}
+.pill{display:inline-block;background:rgba(6,78,59,.45);border:1px solid rgba(16,185,129,.3);color:#34d399;border-radius:999px;padding:5px 12px;font-size:12px}
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:36px;align-items:center;padding:20px 0 50px}
+.hero .row{gap:12px}
+.mets{display:flex;gap:26px;flex-wrap:wrap;margin-top:30px}.mets b{display:block;font-size:20px}.mets span{color:var(--mu);font-size:12px}
+.stack{position:relative;min-height:380px}
+.fc{position:absolute;width:78%;background:rgba(15,20,18,.78);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 20px 50px rgba(0,0,0,.4);animation:fl 6s ease-in-out infinite}
+.fc small{color:var(--mu);display:block}.fc b{font-size:22px;display:block}
+.f1{top:0;left:0}.f2{top:120px;right:0;animation-delay:-2s}.f3{top:240px;left:6%;animation-delay:-4s}
+@keyframes fl{50%{transform:translateY(-8px)}}
+.blk{padding:36px 0}.blk h2{font-size:clamp(26px,4vw,38px);margin:10px 0 22px;letter-spacing:-.01em}
+.bento{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.bento div{background:rgba(15,20,18,.6);border:1px solid var(--line);border-radius:18px;padding:20px;transition:.25s}
+.bento div:hover{border-color:rgba(16,185,129,.5);box-shadow:0 0 30px rgba(16,185,129,.12)}
+.bento b{display:block;margin:8px 0 4px}.bento p{margin:0;color:var(--mu);font-size:14px}
+#tabs{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;counter-reset:s;margin:8px 0 24px}
+#tabs::before,#tabs::after{content:"";position:absolute;top:19px;left:12.5%;height:2px;background:var(--line)}
+#tabs::before{right:12.5%}#tabs::after{width:calc(75% * var(--p,0));background:var(--ac);transition:width .4s}
+#tabs button{position:relative;background:none;border:0;padding:0;color:var(--mu);display:flex;flex-direction:column;align-items:center;gap:8px;font-size:13px;text-align:center}
+#tabs button::before{counter-increment:s;content:counter(s);width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--bg);border:2px solid var(--line);font-weight:700;z-index:1}
+#tabs button.on{background:none;color:var(--tx)}
+#tabs button.on::before,#tabs button.done::before{border-color:var(--ac);background:var(--ac);color:#04140c}
+.banner{background:linear-gradient(90deg,#10b981,#2dd4bf);border-radius:28px;padding:44px 28px;text-align:center;color:#04140c;margin-top:40px}
+.banner h2{margin:0 0 18px;font-size:clamp(24px,4vw,36px)}
+.banner a{background:#fff;color:#04140c;font-weight:700;border-radius:999px;padding:13px 28px;text-decoration:none;display:inline-block}
+@media(max-width:820px){.links{display:none}.hero{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){.fc{animation:none}}
 @media(prefers-reduced-motion:reduce){#bg{display:none}}
 </style>
 </head>
 <body>
 <canvas id="bg"></canvas>
+<header class="top"><div class="bar"><a class="brand" href="#top"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 20A7 7 0 0 1 4 13c0-5 4-9 16-9 0 12-4 16-9 16z"/><path d="M4 21c3-6 6-9 11-12"/></svg>ClimaSphere AI</a>
+<div class="links"><a href="#features">Features</a><a href="#how">How it works</a><a href="#how" data-go="crop">Crop scanner</a><a href="#how" data-go="ledger">Ledger explorer</a></div>
+<div class="acts"><button class="btn sm" id="lang">EN / اردو</button><a class="cta-s" href="#how" data-go="air">Audit Climate →</a></div></div></header>
 <main>
-<div class="row" style="justify-content:flex-end"><button class="btn sm" id="lang">اردو</button></div>
-<h1 data-i="h1">Climate evidence you can <em>verify</em>.</h1>
-<p class="sub" data-i="sub">ClimaSphere AI reads live air and weather data, measures crop leaf damage from a photo, estimates the loss, and anchors a tamper-proof certificate on a public blockchain.</p>
+<div class="hero" id="top"><div>
+<span class="pill">• AI-powered parametric climate ledger</span>
+<h1 data-i="h1">Climate evidence you can <em>verify on-chain</em>.</h1>
+<p class="sub" data-i="sub">Real-time weather telemetry, AI-assisted foliage risk scans and automated eligibility certificates anchored to a tamper-proof public blockchain.</p>
+<div class="row"><a class="cta-s big" href="#how" data-go="air">Check live data →</a><a class="ghost" href="#how" data-go="ledger">View public ledger</a></div>
+<div class="mets"><div><b>SHA-256</b><span>Verifiable hashes</span></div><div><b>Live</b><span>Open-Meteo telemetry</span></div><div><b>Instant</b><span>Payout eligibility check</span></div></div></div>
+<div class="stack"><div class="fc f1"><small>City and climate index</small><b>Lahore · 41°C</b><span class="r">Severe heatwave alert</span></div>
+<div class="fc f2"><small>AI crop scanner</small><b>Foliage damage 68%</b><span class="y">Stress detected</span></div>
+<div class="fc f3"><small>Parametric payout</small><b class="g">Smart contract triggered</b><span>Certificate anchored</span></div>
+<p class="note" style="position:absolute;bottom:0;margin:0">Illustrative preview, not live data.</p></div></div>
+<div class="blk" id="features"><span class="pill">Features</span><h2>Everything required for automated climate coverage</h2><div class="bento"><div><span aria-hidden="true">🌦️</span><b>Real-time telemetry</b><p>Live AQI, PM2.5, ozone, temperature and humidity for any city from Open-Meteo.</p></div><div><span aria-hidden="true">🍃</span><b>Computer vision crop scan</b><p>HSV segmentation measures leaf damage in your browser, with overlay and mask views.</p></div><div><span aria-hidden="true">📉</span><b>Parametric loss model</b><p>Threshold rules turn damage, humidity and ozone into a yield-loss estimate and a trust score.</p></div><div><span aria-hidden="true">⚡</span><b>Instant eligibility trigger</b><p>The payout rule runs automatically, so there is no claim paperwork to file.</p></div><div><span aria-hidden="true">🔗</span><b>Immutable proof</b><p>SHA-256 chained blocks anchored on Polygon Amoy, with hash verification and a tamper test.</p></div><div><span aria-hidden="true">🌐</span><b>Bilingual Urdu RTL mode</b><p>One-click English and Urdu interface for regional accessibility.</p></div></div></div>
+<div class="blk" id="how"><span class="pill">How it works</span><h2>Four steps from raw data to a verifiable certificate</h2>
 <nav id="tabs">
-<button data-t="air" class="on" data-i="t1">1. Air and weather</button>
-<button data-t="crop" data-i="t2">2. Crop scan</button>
-<button data-t="loss" data-i="t3">3. Loss and payout</button>
-<button data-t="ledger" data-i="t4">4. Ledger</button>
+<button data-t="air" class="on" data-i="t1">Ingest air and weather</button>
+<button data-t="crop" data-i="t2">Computer vision crop scan</button>
+<button data-t="loss" data-i="t3">Parametric loss evaluation</button>
+<button data-t="ledger" data-i="t4">Mint ledger certificate</button>
 </nav>
 
 <section id="t-air" class="on"><div class="card">
@@ -79,7 +126,9 @@ select{background:#0c1613;border:1px solid var(--line);color:var(--tx);padding:1
 <p class="note" id="lMsg">Each block stores the hash of the previous one. Any edit breaks the chain.</p>
 <table><thead><tr><th>#</th><th data-i="c1">City</th><th data-i="c2">Damage</th><th data-i="c3">Trust</th><th data-i="c4">Payout</th><th data-i="c5">Hash</th><th data-i="c6">On-chain</th></tr></thead><tbody id="rows"></tbody></table>
 </div>
-<div class="card"><div class="row"><input id="vh" type="text" placeholder="Paste a block hash to verify"><button class="btn" id="vb" data-i="vb">Verify hash</button></div><p id="vr" class="note"></p></div></section>
+<div class="card"><div class="row"><input id="vh" type="text" placeholder="Paste a block hash to verify"><button class="btn" id="vb" data-i="vb">Verify hash</button></div><p id="vr" class="note"></p></div></section></div>
+<div class="banner"><h2>Ready to verify agricultural climate risk?</h2><a href="#how" data-go="air">Start Verification →</a></div>
+<p class="note" style="text-align:center;margin-top:28px">ClimaSphere AI · IEEE ClimateChain Global Hackathon 2026 · Testnet prototype, not a production insurance product.</p>
 </main>
 
 <script>
@@ -112,7 +161,8 @@ x.beginPath();x.arc(d.x,d.y,d.r,0,6.3);x.fill()}requestAnimationFrame(f)})()})()
 
 // ---- tabs ----
 $("tabs").onclick = e => { const t=e.target.dataset.t; if(!t) return;
-  document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on",b===e.target));
+  const bs=[...document.querySelectorAll("#tabs button")],ix=bs.indexOf(e.target);
+  bs.forEach((b,i)=>{b.classList.toggle("on",i===ix);b.classList.toggle("done",i<ix)});$("tabs").style.setProperty("--p",ix/3);
   document.querySelectorAll("section").forEach(s=>s.classList.toggle("on",s.id==="t-"+t));
   if(t==="loss") renderLoss(); if(t==="ledger") renderChain(); };
 
@@ -249,12 +299,13 @@ $("cert").onclick=()=>{const b=chain[chain.length-1];if(!b){$("lMsg").textConten
   const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([t],{type:"text/plain"}));a.download="climasphere-certificate-"+b.i+".txt";a.click()};
 
 // ---- English / Urdu ----
-const I={en:{h1:"Climate evidence you can <em>verify</em>.",sub:"ClimaSphere AI reads live air and weather data, measures crop leaf damage from a photo, estimates the loss, and anchors a tamper-proof certificate on a public blockchain.",t1:"1. Air and weather",t2:"2. Crop scan",t3:"3. Loss and payout",t4:"4. Ledger",go:"Check city",smp:"Load sample",smpH:"Healthy sample",mk:"Create certificate block",anc:"Anchor last block on Polygon Amoy",tam:"Run tamper test",cert:"Download certificate",vb:"Verify hash",c1:"City",c2:"Damage",c3:"Trust",c4:"Payout",c5:"Hash",c6:"On-chain",v1:"Diagnostic overlay",v2:"Lesion mask",v3:"Raw photo"},
-ur:{h1:"موسمیاتی شواہد جن کی آپ <em>تصدیق</em> کر سکتے ہیں۔",sub:"کلائمہ اسفیئر لائیو ہوا اور موسم کا ڈیٹا پڑھتا ہے، پتے کے نقصان کو تصویر سے ناپتا ہے، نقصان کا اندازہ لگاتا ہے اور چھیڑ چھاڑ سے محفوظ سرٹیفکیٹ کو بلاک چین پر درج کرتا ہے۔",t1:"۱۔ ہوا اور موسم",t2:"۲۔ فصل کا معائنہ",t3:"۳۔ نقصان اور ادائیگی",t4:"۴۔ لیجر",go:"شہر چیک کریں",smp:"نمونہ لوڈ کریں",smpH:"صحت مند نمونہ",mk:"سرٹیفکیٹ بلاک بنائیں",anc:"آخری بلاک بلاک چین پر درج کریں",tam:"چھیڑ چھاڑ کا ٹیسٹ",cert:"سرٹیفکیٹ ڈاؤن لوڈ کریں",vb:"ہیش کی تصدیق کریں",c1:"شہر",c2:"نقصان",c3:"اعتماد",c4:"ادائیگی",c5:"ہیش",c6:"بلاک چین",v1:"تشخیصی اوورلے",v2:"زخم کا ماسک",v3:"اصل تصویر"}};
+const I={en:{h1:"Climate evidence you can <em>verify on-chain</em>.",sub:"Real-time weather telemetry, AI-assisted foliage risk scans and automated eligibility certificates anchored to a tamper-proof public blockchain.",t1:"Ingest air and weather",t2:"Computer vision crop scan",t3:"Parametric loss evaluation",t4:"Mint ledger certificate",go:"Check city",smp:"Load sample",smpH:"Healthy sample",mk:"Create certificate block",anc:"Anchor last block on Polygon Amoy",tam:"Run tamper test",cert:"Download certificate",vb:"Verify hash",c1:"City",c2:"Damage",c3:"Trust",c4:"Payout",c5:"Hash",c6:"On-chain",v1:"Diagnostic overlay",v2:"Lesion mask",v3:"Raw photo"},
+ur:{h1:"موسمیاتی شواہد جن کی آپ بلاک چین پر <em>تصدیق</em> کر سکتے ہیں۔",sub:"حقیقی وقت کا موسمی ڈیٹا، پتوں کے خطرے کا اسکین اور خودکار اہلیت کے سرٹیفکیٹ، جو چھیڑ چھاڑ سے محفوظ عوامی بلاک چین پر درج کیے جاتے ہیں۔",t1:"ہوا اور موسم کا ڈیٹا",t2:"کمپیوٹر وژن فصل اسکین",t3:"پیرامیٹرک نقصان کی جانچ",t4:"لیجر سرٹیفکیٹ بنائیں",go:"شہر چیک کریں",smp:"نمونہ لوڈ کریں",smpH:"صحت مند نمونہ",mk:"سرٹیفکیٹ بلاک بنائیں",anc:"آخری بلاک بلاک چین پر درج کریں",tam:"چھیڑ چھاڑ کا ٹیسٹ",cert:"سرٹیفکیٹ ڈاؤن لوڈ کریں",vb:"ہیش کی تصدیق کریں",c1:"شہر",c2:"نقصان",c3:"اعتماد",c4:"ادائیگی",c5:"ہیش",c6:"بلاک چین",v1:"تشخیصی اوورلے",v2:"زخم کا ماسک",v3:"اصل تصویر"}};
 let LG="en";
 function applyLang(){document.documentElement.dir=LG==="ur"?"rtl":"ltr";document.documentElement.lang=LG;
-  document.querySelectorAll("[data-i]").forEach(e=>e.innerHTML=I[LG][e.dataset.i]);$("lang").textContent=LG==="en"?"اردو":"English";renderAir();renderCropK();renderChain();if($("t-loss").classList.contains("on"))renderLoss()}
+  document.querySelectorAll("[data-i]").forEach(e=>e.innerHTML=I[LG][e.dataset.i]);$("lang").textContent=LG==="en"?"EN / اردو":"اردو / EN";renderAir();renderCropK();renderChain();if($("t-loss").classList.contains("on"))renderLoss()}
 $("lang").onclick=()=>{LG=LG==="en"?"ur":"en";applyLang()};
+document.querySelectorAll("[data-go]").forEach(a=>a.addEventListener("click",()=>document.querySelector('#tabs [data-t="'+a.dataset.go+'"]').click()));
 renderChain();
 </script>
 </body>
