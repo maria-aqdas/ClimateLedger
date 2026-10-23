@@ -150,19 +150,27 @@ tr.bad td{background:rgba(255,107,107,.08);border-top:1px solid var(--bad);borde
 .cmp .new{border-color:rgba(16,185,129,.5);box-shadow:0 0 30px rgba(16,185,129,.12)}
 .cmp small{color:var(--mu)}.cmp b{display:block;font-size:22px;margin:6px 0 10px}.cmp .new b{color:var(--ac)}.cmp p{margin:4px 0;color:var(--mu)}
 @media(max-width:700px){.cmp{grid-template-columns:1fr}}
+button.cta-s{border:0;font:inherit;font-weight:700;cursor:pointer}#demo1{white-space:normal;text-align:center}
+#tel{margin:0}@media(max-width:820px){#tel{display:none}}
+.gwrap{display:flex;gap:24px;align-items:center;flex-wrap:wrap;margin-top:18px}
+.gwrap svg circle.arc{animation:gaug 1s ease}@keyframes gaug{from{stroke-dashoffset:339.3}}
+.mx{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin-top:16px}
+.mc{background:#0c1613;border:1px solid var(--line);border-radius:14px;padding:12px}.mc.na{border-style:dashed;opacity:.7}
+.mc small{color:var(--mu);display:block}.sc{float:right;font-weight:800}
+.mbar{height:6px;background:#1b2e24;border-radius:9px;overflow:hidden;margin:8px 0}.mbar i{display:block;height:100%}
 </style>
 </head>
 <body>
 <canvas id="bg"></canvas>
 <header class="top"><div class="bar"><a class="brand" href="#top"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 20A7 7 0 0 1 4 13c0-5 4-9 16-9 0 12-4 16-9 16z"/><path d="M4 21c3-6 6-9 11-12"/></svg>ClimaSphere AI</a>
 <div class="links"><a href="#features">Features</a><a href="#journey">How it works</a><a href="#how" data-go="crop">Crop scanner</a><a href="#how" data-go="ledger">Ledger explorer</a></div>
-<div class="acts"><button class="btn sm" id="lang">EN / اردو</button><a class="cta-s" href="#how" data-go="air">Audit Climate <span class="ar">→</span></a></div></div></header>
+<div class="acts"><span class="chip" id="tel">Telemetry: idle</span><button class="btn sm" id="lang">EN / اردو</button><a class="cta-s" href="#how" data-go="air">Audit Climate <span class="ar">→</span></a></div></div></header>
 <main>
 <div class="hero" id="top"><div>
 <span class="pill">• AI-powered parametric climate ledger</span>
 <h1 data-i="h1">Climate evidence you can <em>verify on-chain.</em></h1>
 <p class="sub" data-i="sub">Real-time weather telemetry, AI-assisted foliage risk scans and automated eligibility certificates anchored to a tamper-proof public blockchain.</p>
-<div class="row"><a class="cta-s big" href="#how" data-go="air">Check live data <span class="ar">→</span></a><a class="ghost" href="#how" data-go="ledger">View public ledger</a></div>
+<div class="row"><a class="cta-s big" href="#how" data-go="air">Check live data <span class="ar">→</span></a><a class="ghost" href="#how" data-go="ledger">View public ledger</a><button class="cta-s big" id="demo1" data-i="demo1">⚡ Run Complete End-to-End Audit (1-Click Demo)</button></div>
 <div class="mets"><div><b>SHA-256</b><span>Verifiable hashes</span></div><div><b>Live</b><span>Open-Meteo telemetry</span></div><div><b>Instant</b><span>Payout eligibility check</span></div></div></div>
 <div class="stack"><div class="fc f1"><small>City and climate index</small><b>Lahore · 41°C</b><span class="r">Severe heatwave alert</span></div>
 <div class="fc f2"><small>AI crop scanner</small><b>Foliage damage 68%</b><span class="y">Stress detected</span></div>
@@ -177,22 +185,22 @@ tr.bad td{background:rgba(255,107,107,.08);border-top:1px solid var(--bad);borde
 <div class="blk" id="how"><span class="pill">Try it live</span><h2>Run the real pipeline yourself</h2>
 
 
-<section id="t-air" class="on"><div class="sh"><span class="pill" data-i="b1">Step 01</span><h3 data-i="s1"></h3><p data-i="d1"></p></div><div class="card">
-<div class="demo">Need a quick demo? Select a preset: <button class="chip" data-p="heat">🔥 Multan heatwave scenario</button><button class="chip" data-p="wheat">🌱 Normal wheat crop, Kasur</button></div><div class="pillbox"><input id="city" type="text" value="Lahore" aria-label="City"><button class="btn pri" id="goAir"><span class="spin" hidden></span><span data-i="go">Check city</span></button></div>
+<section id="t-air" class="on"><div class="sh" id="step-1"><span class="pill" data-i="b1">Step 01</span><h3 data-i="s1"></h3><p data-i="d1"></p></div><div class="card">
+<div class="demo">Need a quick demo? Live location presets: <button class="chip" data-loc="multan">🔥 Multan (Pakistan)</button><button class="chip" data-loc="ecuador">🍌 Banana belt (Ecuador)</button><button class="chip" data-loc="antalya">🍅 Antalya (Turkey)</button><button class="chip" data-geo>📍 Use my location</button></div><div class="pillbox"><input id="city" type="text" value="Lahore" aria-label="City"><button class="btn pri" id="goAir"><span class="spin" hidden></span><span data-i="go">Check city</span></button></div>
 <p class="note" id="airMsg">Live data from Open-Meteo. Enter any city.</p>
-<div class="kpis" id="airK"></div><div id="stoma"></div></div></section>
+<div class="kpis" id="airK"></div><div id="stoma"></div><div id="eco"></div></div></section>
 
-<section id="t-crop"><div class="sh"><span class="pill" data-i="b2">Step 02</span><h3 data-i="s2"></h3><p data-i="d2"></p></div><div class="card">
-<div class="row"><select id="crop" aria-label="Crop"><option value="banana">Banana</option><option value="tomato">Tomato</option><option value="potato">Potato</option><option value="wheat">Wheat</option><option value="other">Other crop</option></select>
-<button class="btn" id="smp" data-i="smp">Load sample</button><button class="btn" id="smpH" data-i="smpH">Healthy sample</button></div><label class="drop" id="drop"><input id="file" type="file" accept="image/*" aria-label="Leaf photo"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><span>Drop crop leaf image or browse</span></label>
+<section id="t-crop"><div class="sh" id="step-2"><span class="pill" data-i="b2">Step 02</span><h3 data-i="s2"></h3><p data-i="d2"></p></div><div class="card">
+<div class="row"><select id="crop" aria-label="Crop"><option value="banana">Banana</option><option value="tomato">Tomato</option><option value="potato">Potato</option><option value="wheat">Wheat</option><option value="other">General foliage</option></select>
+<button class="btn" id="smp" data-i="smp">Load infected sample</button><button class="btn" id="smpH" data-i="smpH">Load healthy leaf</button></div><label class="drop" id="drop"><input id="file" type="file" accept="image/*" aria-label="Leaf photo"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><span>Drop crop leaf image or browse</span></label>
 <p class="note">Pick a crop, load a sample or upload a close photo of one leaf. Brown and yellow tissue counts as damage. Everything runs in your browser.</p>
 <div class="row" id="views" style="margin-top:12px"><button class="btn sm" data-v="ov" data-i="v1">Diagnostic overlay</button><button class="btn sm" data-v="mk" data-i="v2">Lesion mask</button><button class="btn sm" data-v="rw" data-i="v3">Raw photo</button></div>
 <canvas id="cv" class="v" hidden></canvas>
 <div class="kpis" id="cropK"></div></div></section>
 
-<section id="t-loss"><div class="sh"><span class="pill" data-i="b3">Step 03</span><h3 data-i="s3"></h3><p data-i="d3"></p></div><div class="demo">Need a quick demo? Select a preset: <button class="chip" data-p="heat">🔥 Multan heatwave scenario</button><button class="chip" data-p="wheat">🌱 Normal wheat crop, Kasur</button></div><div class="card" id="lossBox"><p class="note">Run the air check and the crop scan first.</p></div></section>
+<section id="t-loss"><div class="sh" id="step-3"><span class="pill" data-i="b3">Step 03</span><h3 data-i="s3"></h3><p data-i="d3"></p></div><div class="demo">Need a quick demo? Select a preset: <button class="chip" data-p="heat">🔥 Multan heatwave scenario</button><button class="chip" data-p="wheat">🌱 Normal wheat crop, Kasur</button></div><div class="card" id="lossBox"><p class="note">Run the air check and the crop scan first.</p></div></section>
 
-<section id="t-ledger"><div class="sh"><span class="pill" data-i="b4">Step 04</span><h3 data-i="s4"></h3><p data-i="d4"></p></div><div class="card">
+<section id="t-ledger"><div class="sh" id="step-4"><span class="pill" data-i="b4">Step 04</span><h3 data-i="s4"></h3><p data-i="d4"></p></div><div class="card">
 <div class="row" style="margin-bottom:12px"><span class="chip" id="net">Target network: Polygon Amoy Testnet (Chain ID 80002)</span><a id="ctr" class="note" target="_blank" rel="noopener" hidden>View contract on Polygonscan</a></div>
 <div class="row"><button class="btn pri" id="mk" data-i="mk">Create certificate block</button><button class="btn gh" id="anc" data-i="anc">Anchor last block on Polygon Amoy</button><button class="btn gh" id="tam" data-i="tam">Run tamper test</button><button class="btn gh" id="cert" data-i="cert">Download certificate</button></div>
 <p class="note" id="lMsg">Each block stores the hash of the previous one. Any edit breaks the chain.</p>
@@ -218,9 +226,9 @@ const UR={"US AQI":"امریکی AQI","Ozone µg/m³":"اوزون µg/m³","Temp
 "Chain valid. All hashes match.":"چین درست ہے۔ تمام ہیش مل رہے ہیں۔","Chain broken at block":"چین اس بلاک پر ٹوٹی ہوئی ہے","Tamper detected in block":"بلاک میں چھیڑ چھاڑ پکڑی گئی",
 "The hash no longer matches.":"ہیش اب مطابقت نہیں رکھتا۔","Your real chain is unchanged.":"آپ کی اصل چین تبدیل نہیں ہوئی۔",
 "Stomatal risk: heavy particles can clog leaf pores and weaken plant defenses against disease. Scout your crop more often.":"سٹومیٹل خطرہ: ذرات پتوں کے مسام بند کر کے بیماری کے خلاف پودے کی مزاحمت کم کر سکتے ہیں۔ فصل کا زیادہ بار معائنہ کریں۔",
-"No leaf detected. Please upload a close photo of a single leaf.":"پتا نہیں ملا۔ براہِ کرم ایک پتے کی قریب سے تصویر اپلوڈ کریں۔",
+"⚠️ No botanical foliage identified. Please provide a clear leaf image.":"⚠️ کوئی پودے کا پتا نہیں ملا۔ براہِ کرم پتے کی واضح تصویر دیں۔",
 "Live data unavailable. Showing illustrative offline sample data.":"لائیو ڈیٹا دستیاب نہیں۔ نمونہ آف لائن ڈیٹا دکھایا جا رہا ہے۔",
-"Could not load data. Check your connection and try again.":"ڈیٹا لوڈ نہیں ہو سکا۔ کنکشن چیک کریں اور دوبارہ کوشش کریں۔","Offline sample data":"آف لائن نمونہ ڈیٹا","Run Parametric Loss Audit":"پیرامیٹرک نقصان کا آڈٹ چلائیں","Both results are ready.":"دونوں نتائج تیار ہیں۔","No blocks minted yet":"ابھی کوئی بلاک نہیں بنا"};
+"Could not load data. Check your connection and try again.":"ڈیٹا لوڈ نہیں ہو سکا۔ کنکشن چیک کریں اور دوبارہ کوشش کریں۔","Offline sample data":"آف لائن نمونہ ڈیٹا","Run Parametric Loss Audit":"پیرامیٹرک نقصان کا آڈٹ چلائیں","Both results are ready.":"دونوں نتائج تیار ہیں۔","No blocks minted yet":"ابھی کوئی بلاک نہیں بنا","Good":"اچھی","Unhealthy":"غیر صحت بخش","Very unhealthy":"بہت غیر صحت بخش","Hazardous":"خطرناک","Cigarettes per day":"روزانہ سگریٹ کے برابر","WHO daily guideline":"عالمی ادارہ صحت کی یومیہ حد","Best time for fieldwork":"فیلڈ ورک کا بہترین وقت","Avoid outdoor exposure":"کھلی فضا سے پرہیز","based on today's PM2.5 forecast":"آج کی PM2.5 پیش گوئی کے مطابق","Air":"ہوا","Water":"پانی","Thermal":"حرارتی","Land":"زمین","Noise":"شور","Light":"روشنی","Radioactive":"تابکاری","Live air quality index":"لائیو ایئر کوالٹی انڈیکس","Rainfall now":"اس وقت بارش","Heat or frost stress from temperature":"درجہ حرارت سے گرمی یا پالے کا دباؤ","No live source. Needs sensor or satellite data.":"کوئی لائیو ذریعہ نہیں۔ سینسر یا سیٹلائٹ ڈیٹا درکار ہے۔","Telemetry: idle":"ٹیلی میٹری: غیر فعال","Live telemetry":"لائیو ٹیلی میٹری","Demo scenario":"نمونہ منظرنامہ","Quick-fill with demo scenario":"نمونہ منظرنامے سے بھریں","🔊 Listen to Agronomic Advisory":"🔊 زرعی مشورہ سنیں","Simulate tamper":"چھیڑ چھاڑ کی نقل","Restore original":"اصل بحال کریں","No consistency flags.":"کوئی تضاد نہیں ملا۔","Little leaf area found in the photo":"تصویر میں پتے کا رقبہ بہت کم ہے","Damage is high but humidity and ozone do not support it":"نقصان زیادہ ہے مگر نمی اور اوزون اس کی تائید نہیں کرتے","High humidity supports fungal spread":"زیادہ نمی پھپھوندی کے پھیلاؤ میں مدد دیتی ہے","Offline sample data, not a live reading":"آف لائن نمونہ ڈیٹا، لائیو ریڈنگ نہیں"};
 const tr=x=>(typeof LG!=="undefined"&&LG==="ur"&&UR[x])||x;
 
 // ---- background: rising glowing seeds ----
@@ -240,30 +248,49 @@ const getJSON = async (u,sg) => { const r=await fetch(u,{signal:sg}); if(!r.ok) 
 // ---- 1. air and weather ----
 function renderAir(){const A=S.air;if(!A)return;const cl=A.aqi<=50?"g":A.aqi<=100?"y":"r";
   $("airK").innerHTML=k(A.aqi,"US AQI",cl)+k(A.pm25,"PM2.5 µg/m³")+k(A.pm10,"PM10 µg/m³")+k(A.o3,"Ozone µg/m³")+k(A.no2,"NO₂ µg/m³")+k(A.so2,"SO₂ µg/m³")+k(A.t+"°C","Temperature")+k(A.h+"%","Humidity")+k(A.pmMax,"Peak PM2.5, next 24 h",A.pmMax>55?"r":"g");
-  $("stoma").innerHTML=(A.cached?'<div class="warn">'+tr("Offline sample data")+'</div>':"")+(A.demo?'<div class="warn">Demo scenario: illustrative data, not a live reading.</div>':"")+((A.pm25>35||A.aqi>100)?'<div class="warn">'+tr("Stomatal risk: heavy particles can clog leaf pores and weaken plant defenses against disease. Scout your crop more often.")+'</div>':"");renderLoss()}
-$("goAir").onclick = async () => {
-  const m=$("airMsg"),btn=$("goAir"),sp=btn.querySelector(".spin"),name=$("city").value.trim();
+  $("stoma").innerHTML=(A.cached?'<div class="warn">'+tr("Offline sample data")+'</div>':"")+(A.demo?'<div class="warn">Demo scenario: illustrative data, not a live reading.</div>':"")+((A.pm25>35||A.aqi>100)?'<div class="warn">'+tr("Stomatal risk: heavy particles can clog leaf pores and weaken plant defenses against disease. Scout your crop more often.")+'</div>':"");renderEco();renderLoss()}
+const LOC={multan:{name:"Multan",latitude:30.157,longitude:71.524,fb:{aqi:175,pm25:95,pm10:150,o3:135,no2:38,so2:10,t:44,h:38,pmMax:120}},
+ ecuador:{name:"Banana belt, Ecuador",latitude:-1.831,longitude:-78.183,fb:{aqi:45,pm25:10,pm10:20,o3:50,no2:8,so2:2,t:27,h:85,pmMax:14}},
+ antalya:{name:"Antalya",latitude:36.896,longitude:30.713,fb:{aqi:55,pm25:14,pm10:30,o3:95,no2:15,so2:4,t:36,h:35,pmMax:20}}};
+async function lookup(g0){
+  const m=$("airMsg"),btn=$("goAir"),sp=btn.querySelector(".spin"),name=g0?g0.name:$("city").value.trim();
   if(!name){m.textContent="Enter a city name.";return}
   btn.disabled=true;sp.hidden=false;m.textContent="Loading…";
   const ctl=new AbortController(),to=setTimeout(()=>ctl.abort(),3000),sg=ctl.signal;
   try{
-    const kn=CACHE[name.toLowerCase()];   // known cities skip the geocoding request, so the live call is faster
-    const g=kn?{name:kn.city,latitude:kn.lat,longitude:kn.lon}:(await getJSON("https://geocoding-api.open-meteo.com/v1/search?count=1&name="+encodeURIComponent(name),sg)).results?.[0];
+    const kn=g0?null:CACHE[name.toLowerCase()];   // known cities skip geocoding, so the live call is faster
+    const g=g0||(kn?{name:kn.city,latitude:kn.lat,longitude:kn.lon}:(await getJSON("https://geocoding-api.open-meteo.com/v1/search?count=1&name="+encodeURIComponent(name),sg)).results?.[0]);
     if(!g){m.textContent="City not found. Check the spelling and try again.";return}
     const q=`latitude=${g.latitude}&longitude=${g.longitude}`;
     const [a,w]=await Promise.all([
-      getJSON(`https://air-quality-api.open-meteo.com/v1/air-quality?${q}&current=us_aqi,pm2_5,pm10,ozone,nitrogen_dioxide,sulphur_dioxide&hourly=pm2_5&forecast_days=2`,sg),
-      getJSON(`https://api.open-meteo.com/v1/forecast?${q}&current=temperature_2m,relative_humidity_2m`,sg)]);
-    const c=a.current, pmMax=Math.max(...a.hourly.pm2_5.slice(0,24).filter(v=>v!=null));
-    S.air={city:g.name,lat:+(+g.latitude).toFixed(3),lon:+(+g.longitude).toFixed(3),aqi:c.us_aqi,pm25:c.pm2_5,pm10:c.pm10,o3:c.ozone,no2:c.nitrogen_dioxide,so2:c.sulphur_dioxide,t:w.current.temperature_2m,h:w.current.relative_humidity_2m,pmMax};S.audited=false;
-    renderAir();
+      getJSON(`https://air-quality-api.open-meteo.com/v1/air-quality?${q}&current=us_aqi,pm2_5,pm10,ozone,nitrogen_dioxide,sulphur_dioxide&hourly=pm2_5&forecast_days=1&timezone=auto`,sg),
+      getJSON(`https://api.open-meteo.com/v1/forecast?${q}&current=temperature_2m,relative_humidity_2m,precipitation`,sg)]);
+    const c=a.current,hv=a.hourly.pm2_5.slice(0,24),ok=hv.filter(v=>v!=null),mx=Math.max(...ok),mn=Math.min(...ok);
+    S.air={city:g.name,lat:+(+g.latitude).toFixed(3),lon:+(+g.longitude).toFixed(3),aqi:c.us_aqi,pm25:c.pm2_5,pm10:c.pm10,o3:c.ozone,no2:c.nitrogen_dioxide,so2:c.sulphur_dioxide,t:w.current.temperature_2m,h:w.current.relative_humidity_2m,pr:w.current.precipitation,pmMax:mx,best:hv.indexOf(mn),worst:hv.indexOf(mx)};
+    S.audited=false;$("city").value=g.name;renderAir();
     m.textContent=`${g.name}${g.country?", "+g.country:""}. Live reading loaded.`;
   }catch(err){console.error("ClimaSphere air fetch failed:",err);
-    const f=CACHE[name.toLowerCase()];
+    const f=g0&&g0.fb?{city:g0.name,lat:g0.latitude,lon:g0.longitude,...g0.fb}:CACHE[name.toLowerCase()];
     if(f){S.air={...f,cached:true};S.audited=false;renderAir();m.textContent=tr("Live data unavailable. Showing illustrative offline sample data.")}
     else m.textContent=tr("Could not load data. Check your connection and try again.")}
   finally{clearTimeout(to);btn.disabled=false;sp.hidden=true}
-};
+}
+$("goAir").onclick=()=>lookup();
+document.addEventListener("click",e=>{const l=e.target.closest("[data-loc]");if(l)lookup(LOC[l.dataset.loc]);
+  if(e.target.closest("[data-geo]")){if(!navigator.geolocation){$("airMsg").textContent="Location is not available in this browser.";return}
+    navigator.geolocation.getCurrentPosition(p=>lookup({name:"My location",latitude:p.coords.latitude,longitude:p.coords.longitude}),()=>{$("airMsg").textContent="Location permission was denied."})}});
+function renderEco(){const A=S.air;if(!A)return;
+  const lv=A.aqi<=50?["Good","#3ddc84"]:A.aqi<=100?["Moderate","#f5b942"]:A.aqi<=200?["Unhealthy","#ff5c5c"]:A.aqi<=300?["Very unhealthy","#ff5c5c"]:["Hazardous","#ff5c5c"],
+  off=(339.3*(1-Math.min(A.aqi,300)/300)).toFixed(1),hh=n=>String(n).padStart(2,"0")+":00",cig=(A.pm25/22).toFixed(1),who=(A.pm25/15).toFixed(1),
+  sc=v=>v<34?"#3ddc84":v<67?"#f5b942":"#ff5c5c",
+  card=(n,v,t)=>v==null?`<div class="mc na"><b>${tr(n)}</b><span class="sc">–</span><div class="mbar"></div><small>${tr("No live source. Needs sensor or satellite data.")}</small></div>`
+   :`<div class="mc"><b>${tr(n)}</b><span class="sc" style="color:${sc(v)}">${v}</span><div class="mbar"><i style="width:${v}%;background:${sc(v)}"></i></div><small>${tr(t)}</small></div>`,
+  wt=A.pr!=null?Math.min(100,Math.round(A.pr*20)):null,th=Math.round(Math.max(0,Math.min(100,Math.max((A.t-25)*5,(5-A.t)*10))));
+  $("eco").innerHTML=`<div class="gwrap"><svg viewBox="0 0 140 140" width="140" height="140" role="img" aria-label="AQI ${A.aqi}"><circle cx="70" cy="70" r="54" fill="none" stroke="#1b2e24" stroke-width="12"/><circle class="arc" cx="70" cy="70" r="54" fill="none" stroke="${lv[1]}" stroke-width="12" stroke-linecap="round" stroke-dasharray="339.3" stroke-dashoffset="${off}" transform="rotate(-90 70 70)"/><text x="70" y="78" text-anchor="middle" font-size="30" font-weight="800" fill="#f1f7f4">${A.aqi}</text></svg>
+  <div><span class="pill" style="color:${lv[1]};border-color:${lv[1]}">${tr(lv[0])}</span><div class="kpis"><div class="k"><b>${cig}</b><span>${tr("Cigarettes per day")} (PM2.5 ÷ 22)</span></div><div class="k"><b>${who}×</b><span>${tr("WHO daily guideline")} (15 µg/m³)</span></div></div>
+  ${A.best!=null?`<p class="note">${tr("Best time for fieldwork")}: ${hh(A.best)} · ${tr("Avoid outdoor exposure")}: ${hh(A.worst)} (${tr("based on today's PM2.5 forecast")})</p>`:""}</div></div>
+  <div class="mx">${card("Air",Math.min(100,Math.round(A.aqi/3)),"Live air quality index")+card("Water",wt,"Rainfall now")+card("Thermal",th,"Heat or frost stress from temperature")+["Land","Noise","Light","Radioactive"].map(n=>card(n,null)).join("")}</div>`;
+  const t=$("tel");t.textContent=A.cached?tr("Offline sample data"):A.demo?tr("Demo scenario"):tr("Live telemetry")+" · AQI "+A.aqi;t.classList.toggle("on",!A.cached&&!A.demo)}
 
 // ---- 2. crop scan (HSV segmentation) ----
 const TX={
@@ -271,15 +298,20 @@ banana:{d:"Black Sigatoka",chem:"Protectant and systemic fungicides such as manc
 tomato:{d:"Late Blight",chem:"Protectant fungicides such as chlorothalonil or copper, or metalaxyl-based products, rotated by class. Follow the label for rates.",cult:"Remove infected plants, stake and prune for airflow, and avoid wetting leaves late in the day.",prev:"Late blight thrives in cool, wet weather. Check the forecast and protect before long wet spells."},
 potato:{d:"Early Blight",chem:"Fungicides such as chlorothalonil, mancozeb or azoxystrobin, rotated by class. Follow the label for rates.",cult:"Rotate crops, clear old plant debris, keep plants well fed and avoid drought stress.",prev:"Watch warm, humid spells and start protective sprays when the first spots appear."},
 other:{d:"Leaf damage",chem:"Identify the cause with a local agriculture extension officer before spraying.",cult:"Remove badly affected leaves, improve airflow and avoid overhead watering.",prev:"Track humidity and rainfall, and rescan every few days."}};
+const TXU={
+banana:{d:"بلیک سگاٹوکا",chem:"مینکوزیب، پروپیکونازول یا ازوکسی اسٹروبن جیسی حفاظتی اور سسٹمک پھپھوندی کش ادویات کو مختلف گروپس میں بدل بدل کر استعمال کریں۔ مقدار اور وقفہ پراڈکٹ لیبل کے مطابق رکھیں۔",cult:"بری طرح دھبے والے پتے کاٹ کر تلف کر دیں، پودوں کے درمیان فاصلہ اور پانی کی نکاسی بہتر بنائیں، اور پانی اوپر سے دینے کے بجائے جڑ میں دیں۔",prev:"ہر ہفتے فصل کا معائنہ کریں۔ نمی ۸۰ فیصد سے زیادہ اور گرم راتیں ہوں تو بیماری تیزی سے پھیلتی ہے۔"},
+tomato:{d:"لیٹ بلائٹ (جھلساؤ)",chem:"کلوروتھیلونل یا کاپر، یا میٹالیکسل پر مبنی ادویات کو گروپ بدل بدل کر استعمال کریں۔ مقدار لیبل کے مطابق رکھیں۔",cult:"متاثرہ پودے ہٹا دیں، ہوا کے گزر کے لیے سہارا اور کانٹ چھانٹ کریں، اور شام کے وقت پتوں کو گیلا کرنے سے گریز کریں۔",prev:"لیٹ بلائٹ ٹھنڈے اور گیلے موسم میں پھیلتا ہے۔ موسم کی پیش گوئی دیکھیں اور لمبی بارشوں سے پہلے حفاظتی سپرے کریں۔"},
+potato:{d:"ارلی بلائٹ",chem:"کلوروتھیلونل، مینکوزیب یا ازوکسی اسٹروبن جیسی ادویات گروپ بدل بدل کر استعمال کریں۔ مقدار لیبل کے مطابق رکھیں۔",cult:"فصل کی باری بدلیں، پرانے پودوں کی باقیات صاف کریں، پودوں کو مناسب خوراک دیں اور پانی کی کمی سے بچائیں۔",prev:"گرم اور مرطوب موسم پر نظر رکھیں اور پہلے دھبے نظر آتے ہی حفاظتی سپرے شروع کریں۔"},
+other:{d:"پتوں کو نقصان",chem:"سپرے سے پہلے مقامی محکمہ زراعت کے افسر سے بیماری کی وجہ معلوم کریں۔",cult:"بری طرح متاثرہ پتے ہٹا دیں، ہوا کا گزر بہتر کریں اور اوپر سے پانی دینے سے بچیں۔",prev:"نمی اور بارش کا ریکارڈ رکھیں اور ہر چند دن بعد دوبارہ اسکین کریں۔"}};
 function hsv(r,g,b){r/=255;g/=255;b/=255;const M=Math.max(r,g,b),n=Math.min(r,g,b),d=M-n;let h=0;
   if(d){h=M===r?((g-b)/d)%6:M===g?(b-r)/d+2:(r-g)/d+4;h*=60;if(h<0)h+=360}return[h,M?d/M:0,M]}
 function analyze(c){const x=c.getContext("2d",{willReadFrequently:true}),W=c.width,H=c.height,raw=x.getImageData(0,0,W,H),p=raw.data,n=W*H,L=new Uint8Array(n),M=new Uint8Array(n),E=new Uint8Array(n);let leaf=0,les=0;
   for(let j=0;j<n;j++){const i=j*4,[h,s2,v]=hsv(p[i],p[i+1],p[i+2]);
-    if(h>=15&&h<=65&&s2>.35&&v>.25){M[j]=1;L[j]=1;les++}else if(h>65&&h<170&&s2>.25&&v>.15){L[j]=1;leaf++}}
+    if(h>=15&&h<=65&&s2>.30&&v>.20){M[j]=1;L[j]=1;les++}else if(h>65&&h<170&&s2>.20&&v>.15){L[j]=1;leaf++}}
   for(let y=1;y<H-1;y++)for(let q=1;q<W-1;q++){const j=y*W+q;if(L[j]&&(!L[j-1]||!L[j+1]||!L[j-W]||!L[j+W]))E[j]=1}
   S.vis={raw,M,E,W,H,c};
   const tot=leaf+les,cover=tot/n*100,sev=tot?les/tot*100:0,st=sev<10?1:sev<=30?2:3;
-  if(cover<2){S.crop=null;S.audited=false;$("cropK").innerHTML='<div class="warn">'+tr("No leaf detected. Please upload a close photo of a single leaf.")+'</div>';renderLoss();return}
+  if(cover<4){S.crop=null;S.audited=false;$("cropK").innerHTML='<div class="warn">'+tr("⚠️ No botanical foliage identified. Please provide a clear leaf image.")+'</div>';renderLoss();return}
   S.crop={sev:+sev.toFixed(1),cover:+cover.toFixed(1),stage:st,name:$("crop").value};S.audited=false;
   renderCropK();
   paint("ov")}
@@ -306,7 +338,7 @@ function sample(kind){const c=$("cv"),x=c.getContext("2d");c.width=480;c.height=
 $("smp").onclick=()=>sample($("crop").value==="other"?"tomato":$("crop").value);
 $("smpH").onclick=()=>sample("healthy");
 function loadFile(f){const img=new Image();
-  img.onload=()=>{const c=$("cv"),s=Math.min(1,480/Math.max(img.width,img.height));c.width=img.width*s;c.height=img.height*s;c.hidden=false;c.getContext("2d").drawImage(img,0,0,c.width,c.height);analyze(c)};
+  img.onload=()=>{const c=$("cv"),s=Math.min(1,640/Math.max(img.width,img.height));c.width=img.width*s;c.height=img.height*s;c.hidden=false;c.getContext("2d").drawImage(img,0,0,c.width,c.height);analyze(c)};
   img.onerror=()=>{$("cropK").innerHTML='<div class="warn">Could not read that image.</div>'};
   img.src=URL.createObjectURL(f)}
 $("file").onchange=e=>{const f=e.target.files[0];if(f)loadFile(f)};
@@ -329,15 +361,16 @@ function calc(){
   const elig=C.sev>=10&&(A.h>=70||A.o3>=100)&&conf>=60;
   return S.loss={yl,lo,hi,conf,why,elig};
 }
+const PN="Payout rule: damage of 10% or more, plus humidity of 70% or more or ozone of 100 µg/m³ or more, plus a trust score of 60 or more. Loss formulas are heuristics for demonstration. Treatment notes are general guidance, so confirm products and rates with a local agriculture extension officer.";UR[PN]="ادائیگی کا اصول: نقصان ۱۰ فیصد یا زیادہ ہو، نمی ۷۰ فیصد یا زیادہ (یا اوزون ۱۰۰ µg/m³ یا زیادہ) ہو، اور اعتماد کا اسکور ۶۰ یا زیادہ ہو۔ نقصان کے فارمولے صرف مظاہرے کے لیے اندازے ہیں۔ علاج کی ہدایات عمومی ہیں، پروڈکٹ اور مقدار مقامی محکمہ زراعت کے افسر سے ضرور پوچھیں۔";
 function renderLoss(){const L=calc(),b=$("lossBox");
-  if(!L){b.innerHTML='<p class="note">Run the air check and the crop scan first.</p>';return}
+  if(!L){b.innerHTML='<p class="note">Run the air check and the crop scan first.</p><button class="btn pri" data-p="heat" style="border-radius:999px">'+tr("Quick-fill with demo scenario")+'</button>';return}
   if(!S.audited){b.innerHTML='<p class="note">'+tr("Both results are ready.")+'</p><button class="btn pri" id="runAudit">'+tr("Run Parametric Loss Audit")+' <span class="ar">→</span></button>';return}
-  const A=S.air,C=S.crop,T=TX[C.name]||TX.other,dp=(A.t-(100-A.h)/5).toFixed(1),sick=C.sev>=1;
+  const A=S.air,C=S.crop,TT=LG==="ur"?TXU:TX,T=TT[C.name]||TT.other,dp=(A.t-(100-A.h)/5).toFixed(1),sick=C.sev>=1;
   b.innerHTML=`<div class="kpis">${k(L.yl+"%","Projected yield loss",L.yl>15?"r":"y")}${k("$"+L.lo+"–"+L.hi,"Loss per acre")}${k(L.conf+"/100","Trust score",L.conf>=60?"g":"r")}${k(L.elig?"Eligible":"Not eligible","Parametric payout",L.elig?"g":"y")}</div>
-  <p class="note">${L.why.join(". ")||"No consistency flags."}</p>
+  <p class="note">${L.why.map(tr).join(". ")||tr("No consistency flags.")}</p>
   <h3>${sick?T.d:tr("Healthy leaf")} (${C.name})</h3>
-  ${sick?`<div class="plan"><div><b>${tr("Chemical protocol")}</b><p class="note">${T.chem}</p></div><div><b>${tr("Cultural controls")}</b><p class="note">${T.cult}</p></div><div><b>${tr("Preventative action")}</b><p class="note">${T.prev} Dew point now is about ${dp}°C at ${A.h}% humidity.</p></div></div>`:'<p class="note">No treatment needed. Rescan in a few days.</p>'}
-  <p class="note">Payout rule: damage of 10% or more, plus humidity of 70% or more or ozone of 100 µg/m³ or more, plus a trust score of 60 or more. Loss formulas are heuristics for demonstration. Treatment notes are general guidance, so confirm products and rates with a local agriculture extension officer.</p>`}
+  ${sick?`<button class="btn gh" id="speak" style="border-radius:999px">${tr("🔊 Listen to Agronomic Advisory")}</button><div class="plan"><div><b>${tr("Chemical protocol")}</b><p class="note">${T.chem}</p></div><div><b>${tr("Cultural controls")}</b><p class="note">${T.cult}</p></div><div><b>${tr("Preventative action")}</b><p class="note">${T.prev} Dew point now is about ${dp}°C at ${A.h}% humidity.</p></div></div>`:'<p class="note">No treatment needed. Rescan in a few days.</p>'}
+  <p class="note">${tr(PN)}</p>`}
 
 // ---- 4. ledger ----
 let chain=[];try{chain=JSON.parse(localStorage.getItem("cs_chain3")||"[]")}catch{}
@@ -347,17 +380,18 @@ const body=b=>JSON.stringify([b.i,b.ts,b.city,b.crop,b.dis,b.lat,b.lon,b.aqi,b.p
 async function validate(c){for(let i=0;i<c.length;i++){
   if(await sha(body(c[i]))!==c[i].hash) return i+1;
   if(c[i].prev!==(i?c[i-1].hash:"0".repeat(64))) return i+1}return 0}
-$("mk").onclick=async()=>{const L=calc(),A=S.air,C=S.crop;
+async function mint(){const L=calc(),A=S.air,C=S.crop;
   if(!L){$("lMsg").textContent="Run the air check and the crop scan first.";return}
   const b={i:chain.length+1,ts:new Date().toISOString(),city:A.city,crop:C.name,dis:C.sev<1?"Healthy":(TX[C.name]||TX.other).d,lat:A.lat,lon:A.lon,aqi:A.aqi,pm25:A.pm25,o3:A.o3,t:A.t,h:A.h,sev:C.sev,loss:L.yl,conf:L.conf,elig:L.elig,src:A.cached?"offline":A.demo?"demo":"live",prev:chain.length?chain[chain.length-1].hash:"0".repeat(64)};
-  b.hash=await sha(body(b));chain.push(b);save();renderChain();$("lMsg").textContent="Block "+b.i+" created."};
+  b.hash=await sha(body(b));chain.push(b);save();renderChain();$("lMsg").textContent="Block "+b.i+" created."}
+$("mk").onclick=mint;
 const TAMP={};
 const LOCK='<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#8ea39a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
 const BRK='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff6b6b" stroke-width="2" stroke-linecap="round" aria-label="Broken chain"><path d="M10 13a5 5 0 0 0 7 0l2-2a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-2 2a5 5 0 0 0 7 7l1-1"/><path d="M4 4l16 16"/></svg>';
 async function renderChain(){const bad=await validate(chain);let rows="";const hit=[];
   for(const b of chain){const t=TAMP[b.i];let dmg=b.sev+"%",st="";
     if(t){const f={...b,sev:+(b.sev+15).toFixed(1)},rh=await sha(body(f));dmg=f.sev+"%";hit.push(b.i);st=`<br><small class="r">recalculated ${rh.slice(0,10)}… ≠ ${b.hash.slice(0,10)}…</small>`}
-    rows+=`<tr class="${t?"bad":""}"><td>${b.i}</td><td>${b.city}, ${b.crop}</td><td>${dmg}</td><td>${b.conf}</td><td>${b.elig&&!t?"Yes":"No"}</td><td><code>${b.hash.slice(0,14)}…</code>${st}</td><td>${b.tx?`<a target="_blank" rel="noopener" href="https://amoy.polygonscan.com/tx/${b.tx}">${b.tx.slice(0,10)}…</a>`:"–"}</td><td>${t?BRK+' <button class="btn sm" data-rs="'+b.i+'">Restore original</button>':'<button class="btn sm gh" data-tp="'+b.i+'">Simulate tamper</button>'}</td></tr>`}
+    rows+=`<tr class="${t?"bad":""}"><td>${b.i}</td><td>${b.city}, ${b.crop}</td><td>${dmg}</td><td>${b.conf}</td><td>${b.elig&&!t?"Yes":"No"}</td><td><code>${b.hash.slice(0,14)}…</code>${st}</td><td>${b.tx?`<a target="_blank" rel="noopener" href="https://amoy.polygonscan.com/tx/${b.tx}">${b.tx.slice(0,10)}…</a>`:"–"}</td><td>${t?BRK+' <button class="btn sm" data-rs="'+b.i+'">'+tr("Restore original")+'</button>':'<button class="btn sm gh" data-tp="'+b.i+'">'+tr("Simulate tamper")+'</button>'}</td></tr>`}
   $("rows").innerHTML=rows||`<tr><td colspan="8" class="empty">${LOCK}<br>${tr("No blocks minted yet")}</td></tr>`;
   if(hit.length)$("lMsg").innerHTML=`<div class="warn r">⚠️ Tamper detected in block ${hit.join(", ")}. Hash recalculation failed: the data no longer matches the recorded hash, so this certificate is invalid and the payout claim is rejected.</div>`;
   else if(chain.length)$("lMsg").innerHTML=bad?`<span class="r">${tr("Chain broken at block")} ${bad}.</span>`:'<span class="g">'+tr("Chain valid. All hashes match.")+'</span>'}
@@ -370,8 +404,8 @@ $("vb").onclick=async()=>{const q=$("vh").value.trim().toLowerCase(),b=chain.fin
   const ok=await sha(body(b))===b.hash;$("vr").innerHTML=ok?`<span class="g">Valid. Block ${b.i} data is untampered.</span>`:'<span class="r">Invalid. Data does not match the hash.</span>'};
 $("anc").onclick=async()=>{const b=chain[chain.length-1],m=$("lMsg");
   if(!b){m.textContent="Create a block first.";return}
-  if(!CONTRACT){m.textContent="Set the CONTRACT address in index.html first.";return}
-  if(!window.ethereum){m.textContent="Install MetaMask to anchor on-chain.";return}
+  if(!CONTRACT){m.innerHTML='Contract address not configured yet. <a target="_blank" rel="noopener" href="https://amoy.polygonscan.com/">Open Polygon Amoy explorer</a>';return}
+  if(!window.ethereum){m.innerHTML='Install MetaMask to anchor on-chain. <a target="_blank" rel="noopener" href="https://amoy.polygonscan.com/">Open Polygon Amoy explorer</a>';return}
   try{m.textContent="Confirm in your wallet…";
     try{await ethereum.request({method:"wallet_switchEthereumChain",params:[{chainId:"0x13882"}]})}
     catch{await ethereum.request({method:"wallet_addEthereumChain",params:[{chainId:"0x13882",chainName:"Polygon Amoy",nativeCurrency:{name:"POL",symbol:"POL",decimals:18},rpcUrls:["https://rpc-amoy.polygon.technology"],blockExplorerUrls:["https://amoy.polygonscan.com"]}]})}
@@ -387,13 +421,13 @@ $("cert").onclick=()=>{const b=chain[chain.length-1];if(!b){$("lMsg").textConten
   const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([t],{type:"text/plain"}));a.download="climasphere-certificate-"+b.i+".txt";a.click()};
 
 // ---- English / Urdu ----
-const I={en:{h1:"Climate evidence you can <em>verify on-chain.</em>",sub:"Real-time weather telemetry, AI-assisted foliage risk scans and automated eligibility certificates anchored to a tamper-proof public blockchain.",t1:"Ingest air and weather",t2:"Computer vision crop scan",t3:"Parametric loss evaluation",t4:"Mint ledger certificate",go:"Check city",smp:"Load sample",smpH:"Healthy sample",mk:"Create certificate block",anc:"Anchor last block on Polygon Amoy",tam:"Run tamper test",cert:"Download certificate",vb:"Verify hash",c1:"City",c2:"Damage",c3:"Trust",c4:"Payout",c5:"Hash",c6:"On-chain",v1:"Diagnostic overlay",v2:"Lesion mask",v3:"Raw photo",b1:"Step 01",b2:"Step 02",b3:"Step 03",b4:"Step 04",
+const I={en:{h1:"Climate evidence you can <em>verify on-chain.</em>",sub:"Real-time weather telemetry, AI-assisted foliage risk scans and automated eligibility certificates anchored to a tamper-proof public blockchain.",t1:"Ingest air and weather",t2:"Computer vision crop scan",t3:"Parametric loss evaluation",t4:"Mint ledger certificate",go:"Check city",smp:"Load infected sample",smpH:"Load healthy leaf",mk:"Create certificate block",anc:"Anchor last block on Polygon Amoy",tam:"Run tamper test",cert:"Download certificate",vb:"Verify hash",c1:"City",c2:"Damage",c3:"Trust",c4:"Payout",c5:"Hash",c6:"On-chain",v1:"Diagnostic overlay",v2:"Lesion mask",v3:"Raw photo",demo1:"⚡ Run Complete End-to-End Audit (1-Click Demo)",b1:"Step 01",b2:"Step 02",b3:"Step 03",b4:"Step 04",
 s1:"Step 1: Ingest Air & Weather",s2:"Step 2: Computer Vision Crop Scan",s3:"Step 3: Parametric Loss Evaluation",s4:"Step 4: Mint Ledger Certificate",
 d1:"Enter your city name. The system instantly checks real-time heat, humidity and pollution to see if the weather is harming crops.",
 d2:"Upload a photo of a crop leaf. The scan measures what percentage of the leaf is damaged, brown or yellow.",
 d3:"Weather and leaf damage are combined automatically to estimate how much of the harvest is lost and whether a payout is due.",
 d4:"The full result is locked into a tamper-proof record you can anchor on the blockchain, with a downloadable certificate anyone can verify."},
-ur:{h1:"موسمیاتی شواہد جن کی آپ بلاک چین پر <em>تصدیق</em> کر سکتے ہیں۔",sub:"حقیقی وقت کا موسمی ڈیٹا، پتوں کے خطرے کا اسکین اور خودکار اہلیت کے سرٹیفکیٹ، جو چھیڑ چھاڑ سے محفوظ عوامی بلاک چین پر درج کیے جاتے ہیں۔",t1:"ہوا اور موسم کا ڈیٹا",t2:"کمپیوٹر وژن فصل اسکین",t3:"پیرامیٹرک نقصان کی جانچ",t4:"لیجر سرٹیفکیٹ بنائیں",go:"شہر چیک کریں",smp:"نمونہ لوڈ کریں",smpH:"صحت مند نمونہ",mk:"سرٹیفکیٹ بلاک بنائیں",anc:"آخری بلاک بلاک چین پر درج کریں",tam:"چھیڑ چھاڑ کا ٹیسٹ",cert:"سرٹیفکیٹ ڈاؤن لوڈ کریں",vb:"ہیش کی تصدیق کریں",c1:"شہر",c2:"نقصان",c3:"اعتماد",c4:"ادائیگی",c5:"ہیش",c6:"بلاک چین",v1:"تشخیصی اوورلے",v2:"زخم کا ماسک",v3:"اصل تصویر",b1:"مرحلہ ۰۱",b2:"مرحلہ ۰۲",b3:"مرحلہ ۰۳",b4:"مرحلہ ۰۴",
+ur:{h1:"موسمیاتی شواہد جن کی آپ بلاک چین پر <em>تصدیق</em> کر سکتے ہیں۔",sub:"حقیقی وقت کا موسمی ڈیٹا، پتوں کے خطرے کا اسکین اور خودکار اہلیت کے سرٹیفکیٹ، جو چھیڑ چھاڑ سے محفوظ عوامی بلاک چین پر درج کیے جاتے ہیں۔",t1:"ہوا اور موسم کا ڈیٹا",t2:"کمپیوٹر وژن فصل اسکین",t3:"پیرامیٹرک نقصان کی جانچ",t4:"لیجر سرٹیفکیٹ بنائیں",go:"شہر چیک کریں",smp:"متاثرہ نمونہ لوڈ کریں",smpH:"صحت مند پتا لوڈ کریں",mk:"سرٹیفکیٹ بلاک بنائیں",anc:"آخری بلاک بلاک چین پر درج کریں",tam:"چھیڑ چھاڑ کا ٹیسٹ",cert:"سرٹیفکیٹ ڈاؤن لوڈ کریں",vb:"ہیش کی تصدیق کریں",c1:"شہر",c2:"نقصان",c3:"اعتماد",c4:"ادائیگی",c5:"ہیش",c6:"بلاک چین",v1:"تشخیصی اوورلے",v2:"زخم کا ماسک",v3:"اصل تصویر",demo1:"⚡ مکمل آڈٹ ایک کلک میں چلائیں (ڈیمو)",b1:"مرحلہ ۰۱",b2:"مرحلہ ۰۲",b3:"مرحلہ ۰۳",b4:"مرحلہ ۰۴",
 s1:"مرحلہ ۱: ہوا اور موسم کا ڈیٹا",s2:"مرحلہ ۲: کمپیوٹر وژن فصل اسکین",s3:"مرحلہ ۳: پیرامیٹرک نقصان کی جانچ",s4:"مرحلہ ۴: لیجر سرٹیفکیٹ بنائیں",
 d1:"اپنے شہر کا نام لکھیں۔ سسٹم فوراً گرمی، نمی اور آلودگی چیک کرتا ہے تاکہ پتا چلے کہ موسم فصل کو نقصان تو نہیں پہنچا رہا۔",
 d2:"فصل کے پتے کی تصویر اپلوڈ کریں۔ اسکین بتاتا ہے کہ پتے کا کتنے فیصد حصہ خراب، بھورا یا پیلا ہے۔",
@@ -438,9 +472,18 @@ const jReduce=matchMedia("(prefers-reduced-motion:reduce)").matches;
 new IntersectionObserver(en=>{jOn=en[0].isIntersecting&&!jReduce},{threshold:.35}).observe($("journey"));
 setInterval(()=>{if(!jOn||jHover||document.hidden||performance.now()<jPause)return;jEl+=50;
   $("jb").style.width=Math.min(jEl/3000,1)*100+"%";if(jEl>=3000)show((ji+1)%4)},50);
-$("lossBox").onclick=e=>{if(e.target.closest("#runAudit")){S.audited=true;renderLoss()}};
-const PRE={heat:{a:{city:"Multan",lat:30.2,lon:71.47,aqi:175,pm25:95,pm10:150,o3:135,no2:38,so2:10,t:44,h:38,pmMax:120},c:"tomato",s:"tomato"},
+function speak(){if(!("speechSynthesis" in window)||!S.crop)return;const ur=LG==="ur",TT=ur?TXU:TX,T=TT[S.crop.name]||TT.other,u=new SpeechSynthesisUtterance([T.chem,T.cult,T.prev].join(" "));
+  u.lang=ur?"ur-PK":"en-US";speechSynthesis.cancel();speechSynthesis.speak(u)}
+$("lossBox").onclick=e=>{if(e.target.closest("#speak"))speak();if(e.target.closest("#runAudit")){S.audited=true;renderLoss()}};
+const PRE={heat:{a:{city:"Multan",lat:30.157,lon:71.524,aqi:175,pm25:95,pm10:150,o3:135,no2:38,so2:10,t:44,h:38,pmMax:120},c:"tomato",s:"tomato"},
  wheat:{a:{city:"Kasur",lat:31.12,lon:74.45,aqi:90,pm25:30,pm10:60,o3:60,no2:20,so2:5,t:32,h:55,pmMax:45},c:"wheat",s:"healthy"}};
+async function runDemo(){const bt=$("demo1");bt.disabled=true;
+  S.air={...PRE.heat.a,demo:true};$("crop").value="banana";sample("banana");S.audited=true;renderAir();
+  $("airMsg").textContent="Demo scenario loaded. Illustrative data, not a live reading.";
+  await mint();await renderChain();
+  $("lMsg").innerHTML='<span class="g">✔ End-to-end audit complete. Block #'+chain[chain.length-1].i+' minted and hash-chained.</span>';
+  goStep("ledger");bt.disabled=false}
+$("demo1").onclick=runDemo;
 function preset(k){const P=PRE[k];S.air={...P.a,demo:true};$("crop").value=P.c;sample(P.s);S.audited=true;renderAir();
   $("airMsg").textContent="Demo scenario loaded. Illustrative data, not a live reading.";goStep("loss")}
 document.addEventListener("click",e=>{const b=e.target.closest("[data-p]");if(b)preset(b.dataset.p)});
