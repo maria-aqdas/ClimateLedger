@@ -165,6 +165,24 @@ button.cta-s{border:0;font:inherit;font-weight:700;cursor:pointer}#demo1{white-s
 .mbox{max-width:560px;max-height:85vh;overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px}
 .mbox h4{margin:14px 0 4px;color:var(--ac)}.mbox ul{margin:0;padding-inline-start:20px;color:var(--mu)}.mbox p{color:var(--mu);margin:0}
 #qchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}#qchips .chip{white-space:normal;cursor:pointer}
+html:not([dir=rtl]) .hero h1{font-size:30px;line-height:1.2;font-weight:700;letter-spacing:-.025em;color:#fff;margin:16px 0 0}
+html:not([dir=rtl]) .hero .sub{font-size:16px;line-height:1.625;max-width:36rem;margin:16px 0 0}
+@media(min-width:640px){html:not([dir=rtl]) .hero h1{font-size:36px;line-height:1.15}html:not([dir=rtl]) .hero .sub{font-size:18px}}
+@media(min-width:1024px){html:not([dir=rtl]) .hero h1{font-size:48px;line-height:1.1}}
+.hero .pill{background:rgba(2,44,34,.6);border-color:rgba(6,95,70,.5);color:#34d399;padding:4px 12px}
+.hero{gap:40px;padding:64px 0}
+@media(min-width:768px){.hero{padding:96px 0}}
+@media(min-width:1024px){.hero{gap:64px}}
+.hero .row{margin-top:32px;gap:12px}
+.hero .ghost{color:var(--mu);background:transparent}.hero .ghost:hover{color:var(--tx);border-color:rgba(16,185,129,.4)}
+.demo-pill{margin-top:24px;display:inline-flex;align-items:center;gap:8px;font:inherit;font-size:12px;font-weight:500;color:#6ee7b7;background:rgba(2,44,34,.4);border:1px solid rgba(16,185,129,.2);padding:6px 14px;border-radius:999px;cursor:pointer;transition:.2s;text-align:start}
+.demo-pill:hover{border-color:rgba(16,185,129,.4);background:rgba(2,44,34,.6)}.demo-pill:disabled{opacity:.6;cursor:wait}
+.mets{margin-top:36px}
+.stack{display:flex;flex-direction:column;gap:16px;min-height:0}
+.fc{position:static;width:100%;padding:24px;animation:none}
+.f1,.f2,.f3{top:auto;left:auto;right:auto}
+.fc span{display:inline-block;margin-top:10px;font-size:13px;font-weight:600;padding:3px 10px;border-radius:999px;background:rgba(255,255,255,.06)}
+.fc span.r{background:rgba(255,92,92,.14)}.fc span.y{background:rgba(245,185,66,.14)}
 </style>
 </head>
 <body>
@@ -178,12 +196,13 @@ button.cta-s{border:0;font:inherit;font-weight:700;cursor:pointer}#demo1{white-s
 <span class="pill">• AI-powered parametric climate ledger</span>
 <h1 data-i="h1">Climate evidence you can <em>verify on-chain.</em></h1>
 <p class="sub" data-i="sub">Real-time weather telemetry, AI-assisted foliage risk scans and automated eligibility certificates anchored to a tamper-proof public blockchain.</p>
-<div class="row"><a class="cta-s big" href="#how" data-go="air">Check live data <span class="ar">→</span></a><a class="ghost" href="#how" data-go="ledger">View public ledger</a><button class="cta-s big" id="demo1" data-i="demo1">⚡ Run Complete End-to-End Audit (1-Click Demo)</button></div>
+<div class="row"><a class="cta-s big" href="#how" data-go="air">Check live data <span class="ar">→</span></a><a class="ghost" href="#how" data-go="ledger">View public ledger</a></div>
+<button class="demo-pill" id="demo1" data-i="demo1">⚡ Run Complete End-to-End Audit (1-Click Demo)</button>
 <div class="mets"><div><b>SHA-256</b><span>Verifiable hashes</span></div><div><b>Live</b><span>Open-Meteo telemetry</span></div><div><b>Instant</b><span>Payout eligibility check</span></div></div></div>
 <div class="stack"><div class="fc f1"><small>City and climate index</small><b>Lahore · 41°C</b><span class="r">Severe heatwave alert</span></div>
 <div class="fc f2"><small>AI crop scanner</small><b>Foliage damage 68%</b><span class="y">Stress detected</span></div>
 <div class="fc f3"><small>Parametric payout</small><b class="g">Smart contract triggered</b><span>Certificate anchored</span></div>
-<p class="note" style="position:absolute;bottom:0;margin:0">Illustrative preview, not live data.</p></div></div>
+<p class="note" style="margin:0">Illustrative preview, not live data.</p></div></div>
 <div class="blk" id="features"><span class="pill">Features</span><h2>Everything required for automated climate coverage</h2><div class="bento"><div><span aria-hidden="true">🌦️</span><b>Real-time telemetry</b><p>Live AQI, PM2.5, ozone, temperature and humidity for any city from Open-Meteo.</p></div><div><span aria-hidden="true">🍃</span><b>Computer vision crop scan</b><p>HSV segmentation measures leaf damage in your browser, with overlay and mask views.</p></div><div><span aria-hidden="true">📉</span><b>Parametric loss model</b><p>Threshold rules turn damage, humidity and ozone into a yield-loss estimate and a trust score.</p></div><div><span aria-hidden="true">⚡</span><b>Instant eligibility trigger</b><p>The payout rule runs automatically, so there is no claim paperwork to file.</p></div><div><span aria-hidden="true">🔗</span><b>Immutable proof</b><p>SHA-256 chained blocks anchored on Polygon Amoy, with hash verification and a tamper test.</p></div><div><span aria-hidden="true">🌐</span><b>Bilingual Urdu RTL mode</b><p>One-click English and Urdu interface for regional accessibility.</p></div></div><div class="cmp"><div><small>Traditional claims</small><b>Weeks to months</b><p>Surveyor visits needed</p><p>Paperwork dependent</p></div><div class="new"><small>ClimaSphere parametric</small><b>Seconds after data is in</b><p>Weather data and leaf photo cross-checked</p><p>No claim paperwork</p></div></div><p class="note">Qualitative comparison. Real payout times depend on the insurer and local rules.</p></div>
 <div class="blk" id="journey"><span class="pill">How it works</span><h2>From raw data to a verifiable certificate</h2>
 <div class="jvis" id="jv" aria-hidden="true"></div>
