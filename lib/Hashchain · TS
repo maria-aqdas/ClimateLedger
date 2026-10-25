@@ -1,0 +1,47 @@
+// lib/hashChain.ts: local, tamper-evident hash chain. Not a public blockchain.
+import { calculateSHA256, canonicalizeJSON } from "./certificate.ts";
+
+export const GENESIS_HASH = "0".repeat(64);
+
+export interface LedgerBlock {
+  index: number; timestamp: string; city: string; crop: string; damagePct: number;
+  evidenceHash: string; previousHash: string; blockHash: string;
+}
+export interface ChainAudit {
+  isValid: boolean;
+  brokenBlockIndex: number | null; // array position of the first invalid block
+  invalidBlocks: number[];         // array positions of every invalid block
+  errorMessage: string | null;
+}
+
+/** Hashes a canonical JSON array, so separators inside values (for example "|") cannot cause collisions. */
+export async function computeBlockHash(
+  index: number, timestamp: string, city: string, crop: string, damagePct: number, evidenceHash: string, previousHash: string
+): Promise<string> {
+  if (!Number.isFinite(damagePct)) throw new TypeError("damagePct must be a finite number");
+  return calculateSHA256(canonicalizeJSON([index, timestamp, city, crop, Number(damagePct.toFixed(2)), evidenceHash, previousHash]));
+}
+
+export async function createBlock(
+  chain: LedgerBlock[], f: { timestamp: string; city: string; crop: string; damagePct: number; evidenceHash: string }
+): Promise<LedgerBlock> {
+  const index = chain.length + 1;
+  const previousHash = chain.length ? chain[chain.length - 1].blockHash : GENESIS_HASH;
+  return { index, ...f, previousHash, blockHash: await computeBlockHash(index, f.timestamp, f.city, f.crop, f.damagePct, f.evidenceHash, previousHash) };
+}
+
+/** Checks every block's own hash and every link. Never throws on malformed blocks. */
+export async function auditChainIntegrity(chain: LedgerBlock[]): Promise<ChainAudit> {
+  const bad: number[] = []; let first: string | null = null;
+  for (let i = 0; i < chain.length; i++) {
+    const b = chain[i]; let why: string | null = null;
+    const expectedPrev = i === 0 ? GENESIS_HASH : chain[i - 1].blockHash;
+    if (b.previousHash !== expectedPrev) why = i === 0 ? "Genesis block has an invalid previousHash." : `Chain broken at Block #${b.index}: previous hash mismatch.`;
+    else {
+      try { if ((await computeBlockHash(b.index, b.timestamp, b.city, b.crop, b.damagePct, b.evidenceHash, b.previousHash)) !== b.blockHash) why = `Tamper detected at Block #${b.index}: data does not match block hash.`; }
+      catch { why = `Block #${b?.index} is malformed.`; }
+    }
+    if (why) { bad.push(i); first ??= why; }
+  }
+  return { isValid: bad.length === 0, brokenBlockIndex: bad.length ? bad[0] : null, invalidBlocks: bad, errorMessage: first };
+}
