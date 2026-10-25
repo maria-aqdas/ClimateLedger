@@ -1,0 +1,63 @@
+// Run: node --test --experimental-strip-types lib/certificate.test.ts   (Node 22.6+)
+import test from "node:test";
+import assert from "node:assert/strict";
+import { canonicalizeJSON, calculateSHA256, sealEvidence, verifyCertificateIntegrity, type EvidenceRecord } from "./certificate.ts";
+
+const base: Omit<EvidenceRecord, "integrity"> = {
+  schemaVersion: "1.0.0", evidenceId: "CS-TEST-0001", createdAt: "2026-10-24T10:00:00.000Z",
+  location: { city: "Multan", coordinates: { lat: 30.157, lon: 71.524 } },
+  crop: { type: "banana", scannerMethod: "client-hsv-segmentation", estimatedDiscolorationPct: 14.2, detectedLeafAreaPct: 36.3 },
+  telemetry: { source: "Demo-Scenario", observedAt: "n/a", temperatureC: 44, relativeHumidityPct: 38, ozone: 135 },
+  riskEvaluation: { ruleVersion: "demo-v1.0", isEligible: true, trustScore: 80, thresholdsApplied: { damageMin: 10, humidityMin: 70, ozoneMin: 100 }, triggerReason: "damage>=10 and ozone>=100" },
+};
+const clone = <T,>(x: T): T => JSON.parse(JSON.stringify(x));
+
+test("canonical output ignores key order and drops undefined keys", () => {
+  assert.equal(canonicalizeJSON({ b: 1, a: { d: [2, 1], c: undefined } }), '{"a":{"d":[2,1]},"b":1}');
+  assert.equal(canonicalizeJSON({ a: 1, b: 2 }), canonicalizeJSON({ b: 2, a: 1 }));
+});
+test("canonicalization rejects values with no stable JSON form", () => {
+  assert.throws(() => canonicalizeJSON({ a: NaN }));
+  assert.throws(() => canonicalizeJSON({ a: Infinity }));
+  assert.throws(() => canonicalizeJSON([undefined]));
+});
+test("SHA-256 matches the published test vector and is repeatable", async () => {
+  assert.equal(await calculateSHA256("abc"), "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad");
+  assert.equal(await calculateSHA256("x"), await calculateSHA256("x"));
+});
+test("a sealed certificate verifies and is stable on re-verification", async () => {
+  const c = await sealEvidence(base);
+  assert.equal((await verifyCertificateIntegrity(c)).isValid, true);
+  assert.equal((await verifyCertificateIntegrity(clone(c))).isValid, true);
+});
+test("changing any hashed field fails verification", async () => {
+  const c = await sealEvidence(base);
+  for (const edit of [
+    (x: EvidenceRecord) => { x.crop.estimatedDiscolorationPct = 1; },
+    (x: EvidenceRecord) => { x.riskEvaluation.isEligible = false; },
+    (x: EvidenceRecord) => { x.location.city = "Lahore"; },
+    (x: EvidenceRecord) => { x.evidenceId = "CS-OTHER"; },
+    (x: EvidenceRecord) => { (x.integrity as { hashAlgorithm: string }).hashAlgorithm = "SHA-256 "; },
+  ]) {
+    const t = clone(c); edit(t);
+    const r = await verifyCertificateIntegrity(t);
+    assert.equal(r.isValid, false);
+  }
+});
+test("anchoring status and tx hash are not hashed", async () => {
+  const c = await sealEvidence(base);
+  const t = clone(c); t.integrity.blockchainStatus = "Anchored-Polygon-Amoy"; t.integrity.txHash = "0xabc";
+  assert.equal((await verifyCertificateIntegrity(t)).isValid, true);
+});
+test("invalid or unsupported certificates are rejected without throwing", async () => {
+  for (const bad of [null, undefined, 5, "x", {}, [], { schemaVersion: "1.0.0" }]) {
+    const r = await verifyCertificateIntegrity(bad);
+    assert.equal(r.isValid, false);
+    assert.ok(r.reason);
+  }
+  const c = clone(await sealEvidence(base)) as unknown as Record<string, unknown>;
+  c.schemaVersion = "9.9.9";
+  assert.equal((await verifyCertificateIntegrity(c)).reason, "Unsupported schema version");
+  const h = clone(await sealEvidence(base)); h.integrity.canonicalHash = "zz";
+  assert.equal((await verifyCertificateIntegrity(h)).isValid, false);
+});
