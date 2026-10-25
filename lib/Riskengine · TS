@@ -1,0 +1,70 @@
+// lib/riskEngine.ts: explainable demonstration rules (v1.0). Not insurance terms.
+export const RISK_THRESHOLDS = { damageMin: 10, humidityMin: 70, ozoneMin: 100, trustMin: 60 } as const;
+
+export interface RiskInput {
+  city: string;
+  cropType: string;
+  estimatedDiscolorationPct?: number;
+  detectedLeafAreaPct?: number;
+  temperatureC?: number;
+  relativeHumidityPct?: number;
+  ozoneConcentration?: number; // µg/m³
+  isMockData: boolean;
+}
+export type RuleStatus = "PASSED" | "FAILED" | "DATA_UNAVAILABLE";
+export interface RuleResult {
+  ruleId: string; name: string; threshold: string; actualValue: string | number;
+  passed: boolean; status: RuleStatus;
+}
+export interface AssessmentOutput {
+  ruleVersion: "demo-v1.0";
+  outcome: "ELIGIBLE" | "NOT_ELIGIBLE" | "NOT_EVALUABLE";
+  isEligibleForPayout: boolean;
+  trustScore: number; // heuristic consistency score, not a probability
+  rulesEvaluated: RuleResult[];
+  summaryNote: string;
+}
+
+const known = (v: unknown, lo: number, hi: number): v is number =>
+  typeof v === "number" && Number.isFinite(v) && v >= lo && v <= hi;
+
+function rule(ruleId: string, name: string, v: unknown, min: number, unit: string, lo: number, hi: number): RuleResult {
+  const ok = known(v, lo, hi);
+  const status: RuleStatus = !ok ? "DATA_UNAVAILABLE" : (v as number) >= min ? "PASSED" : "FAILED";
+  return { ruleId, name, threshold: `>= ${min}${unit}`, actualValue: ok ? `${v}${unit}` : "N/A", passed: status === "PASSED", status };
+}
+
+export function evaluateClimateRisk(input: RiskInput): AssessmentOutput {
+  const t = RISK_THRESHOLDS;
+  const damage = rule("RULE_FOLIAGE_DAMAGE", "Estimated visible discoloration", input.estimatedDiscolorationPct, t.damageMin, "%", 0, 100);
+  const hum = rule("RULE_HUMIDITY_STRESS", "Relative humidity", input.relativeHumidityPct, t.humidityMin, "%", 0, 100);
+  const oz = rule("RULE_OZONE_STRESS", "Ozone concentration", input.ozoneConcentration, t.ozoneMin, " µg/m³", 0, 2000);
+
+  // Climate stress = humidity OR ozone. Unknown is not a pass.
+  const stress: RuleStatus = hum.passed || oz.passed ? "PASSED"
+    : hum.status === "FAILED" && oz.status === "FAILED" ? "FAILED" : "DATA_UNAVAILABLE";
+
+  let trust = 100;
+  if (input.isMockData) trust -= 20;
+  if (!known(input.detectedLeafAreaPct, 0, 100) || input.detectedLeafAreaPct < 15) trust -= 25;
+  if (hum.status === "DATA_UNAVAILABLE") trust -= 10;
+  if (oz.status === "DATA_UNAVAILABLE") trust -= 10;
+  trust = Math.max(30, Math.min(100, trust));
+
+  const trustOk = trust >= t.trustMin;
+  const outcome: AssessmentOutput["outcome"] =
+    damage.status === "PASSED" && stress === "PASSED" && trustOk ? "ELIGIBLE"
+    : damage.status === "FAILED" || stress === "FAILED" || !trustOk ? "NOT_ELIGIBLE" : "NOT_EVALUABLE";
+
+  return {
+    ruleVersion: "demo-v1.0",
+    outcome,
+    isEligibleForPayout: outcome === "ELIGIBLE",
+    trustScore: trust,
+    rulesEvaluated: [damage, hum, oz],
+    summaryNote:
+      outcome === "ELIGIBLE" ? "Demonstration condition met: visible discoloration plus humidity or ozone stress, with an acceptable consistency score."
+      : outcome === "NOT_EVALUABLE" ? "Could not be evaluated: a required measurement is unavailable."
+      : "Demonstration condition not met under v1.0 rules.",
+  };
+}
