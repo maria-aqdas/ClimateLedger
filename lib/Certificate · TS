@@ -1,0 +1,132 @@
+// lib/certificate.ts
+// Deterministic evidence certificates: canonical JSON + SHA-256 (Web Crypto).
+// Hashed:     everything except `integrity`, plus `integrity.hashAlgorithm`.
+// Not hashed: `integrity.canonicalHash` (circular) and the mutable anchoring fields
+//             `integrity.blockchainStatus` and `integrity.txHash`.
+
+export interface EvidenceRecord {
+  schemaVersion: "1.0.0";
+  evidenceId: string;
+  createdAt: string;
+  location: { city: string; coordinates?: { lat: number; lon: number } };
+  crop: {
+    type: string;
+    scannerMethod: "client-hsv-segmentation";
+    estimatedDiscolorationPct: number;
+    detectedLeafAreaPct: number;
+  };
+  telemetry: {
+    source: "Open-Meteo" | "Illustrative-Fallback" | "Demo-Scenario";
+    observedAt: string;
+    temperatureC?: number;
+    relativeHumidityPct?: number;
+    usAqi?: number;
+    pm25?: number;
+    ozone?: number;
+  };
+  riskEvaluation: {
+    ruleVersion: "demo-v1.0";
+    isEligible: boolean;
+    trustScore: number;
+    thresholdsApplied: { damageMin: number; humidityMin: number; ozoneMin: number };
+    triggerReason: string;
+  };
+  integrity: {
+    hashAlgorithm: "SHA-256";
+    canonicalHash: string;
+    blockchainStatus: "Local-Only" | "Anchored-Polygon-Amoy";
+    txHash?: string;
+  };
+}
+
+export interface VerifyResult {
+  isValid: boolean;
+  expectedHash: string; // recalculated from the content
+  receivedHash: string; // recorded in the certificate
+  reason?: string;      // set when the certificate is rejected or fails
+}
+
+/**
+ * Canonical JSON: object keys sorted by UTF-16 code unit, no whitespace,
+ * keys whose value is `undefined` omitted (as JSON.stringify does).
+ * Throws on NaN/Infinity, functions, bigint, symbols, or `undefined` array items,
+ * because they have no stable JSON form.
+ * For JSON-safe values this follows the same rules as RFC 8785 (JCS); it has not
+ * been cross-checked against another implementation.
+ */
+export function canonicalizeJSON(value: unknown): string {
+  if (value === null) return "null";
+  switch (typeof value) {
+    case "string":
+    case "boolean":
+      return JSON.stringify(value);
+    case "number":
+      if (!Number.isFinite(value)) throw new TypeError("Non-finite number cannot be canonicalized");
+      return JSON.stringify(value);
+    case "object": {
+      if (Array.isArray(value)) return `[${value.map(canonicalizeJSON).join(",")}]`;
+      const o = value as Record<string, unknown>;
+      const pairs = Object.keys(o)
+        .filter((k) => o[k] !== undefined)
+        .sort()
+        .map((k) => `${JSON.stringify(k)}:${canonicalizeJSON(o[k])}`);
+      return `{${pairs.join(",")}}`;
+    }
+    default:
+      throw new TypeError(`Unsupported value type: ${typeof value}`);
+  }
+}
+
+export async function calculateSHA256(canonicalString: string): Promise<string> {
+  const data = new TextEncoder().encode(canonicalString);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+  return Array.from(new Uint8Array(hashBuffer), (b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+/** The exact object that is hashed. */
+export function hashPayload(cert: EvidenceRecord): Record<string, unknown> {
+  const { integrity, ...rest } = cert;
+  return { ...rest, hashAlgorithm: integrity.hashAlgorithm };
+}
+
+/** Builds a local-only certificate from unsigned content. */
+export async function sealEvidence(
+  unsigned: Omit<EvidenceRecord, "integrity">
+): Promise<EvidenceRecord> {
+  const draft = { ...unsigned, integrity: { hashAlgorithm: "SHA-256", canonicalHash: "", blockchainStatus: "Local-Only" } } as EvidenceRecord;
+  draft.integrity.canonicalHash = await calculateSHA256(canonicalizeJSON(hashPayload(draft)));
+  return draft;
+}
+
+const isObj = (v: unknown): v is Record<string, unknown> => typeof v === "object" && v !== null && !Array.isArray(v);
+const isStr = (v: unknown) => typeof v === "string";
+const isNum = (v: unknown) => typeof v === "number" && Number.isFinite(v);
+
+/** Returns an error message, or null if the structure is acceptable. */
+export function validateEvidenceRecord(x: unknown): string | null {
+  if (!isObj(x)) return "Not an object";
+  if (x.schemaVersion !== "1.0.0") return "Unsupported schema version";
+  if (!isStr(x.evidenceId) || !isStr(x.createdAt)) return "Missing evidenceId or createdAt";
+  const { location, crop, telemetry, riskEvaluation, integrity } = x;
+  if (!isObj(location) || !isStr(location.city)) return "Invalid location";
+  if (!isObj(crop) || !isStr(crop.type) || !isNum(crop.estimatedDiscolorationPct) || !isNum(crop.detectedLeafAreaPct)) return "Invalid crop";
+  if (!isObj(telemetry) || !isStr(telemetry.source) || !isStr(telemetry.observedAt)) return "Invalid telemetry";
+  if (!isObj(riskEvaluation) || typeof riskEvaluation.isEligible !== "boolean" || !isNum(riskEvaluation.trustScore) || !isObj(riskEvaluation.thresholdsApplied)) return "Invalid riskEvaluation";
+  if (!isObj(integrity) || integrity.hashAlgorithm !== "SHA-256" || !isStr(integrity.canonicalHash) || !/^[0-9a-f]{64}$/.test(integrity.canonicalHash as string)) return "Invalid integrity block";
+  return null;
+}
+
+/** Never throws on malformed input; returns isValid=false with a reason instead. */
+export async function verifyCertificateIntegrity(cert: unknown): Promise<VerifyResult> {
+  const err = validateEvidenceRecord(cert);
+  const received = isObj(cert) && isObj(cert.integrity) && isStr(cert.integrity.canonicalHash) ? (cert.integrity.canonicalHash as string) : "";
+  if (err) return { isValid: false, expectedHash: "", receivedHash: received, reason: err };
+  try {
+    const expected = await calculateSHA256(canonicalizeJSON(hashPayload(cert as EvidenceRecord)));
+    return expected === received
+      ? { isValid: true, expectedHash: expected, receivedHash: received }
+      : { isValid: false, expectedHash: expected, receivedHash: received, reason: "Hash mismatch" };
+  } catch (e) {
+    return { isValid: false, expectedHash: "", receivedHash: received, reason: e instanceof Error ? e.message : "Unhashable content" };
+  }
+}
