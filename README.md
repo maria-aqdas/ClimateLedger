@@ -16,7 +16,7 @@ Built for the **IEEE ClimateChain Global Hackathon 2026** 🏆
 
 📜 **Smart Contract:** `YOUR_POLYGON_AMOY_CONTRACT_ADDRESS`
 
-🎥 **Video Demo:** `[](https://youtu.be/4TDZd8rKhbA?si=yoXyN2c4UofNPQ_e)`
+🎥 **Video Demo:** `https://youtu.be/4TDZd8rKhbA?si=yoXyN2c4UofNPQ_e`
 
 ---
 
