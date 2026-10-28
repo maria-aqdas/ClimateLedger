@@ -1,4 +1,4 @@
-# 🌍🌱 ClimaSphere AI
+# 🌍🌱 ClimaSphere AI                    
          
 ### 🌦️ AI-Powered Climate Risk Assessment with Secure Digital Evidence 🔐                      
 
