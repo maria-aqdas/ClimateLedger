@@ -1,7 +1,7 @@
 # 🌍🌱 ClimaSphere AI                                    
                                                                         
 ### 🌦️ AI-Powered Climate Risk Assessment with Secure Digital Evidence 🔐                                                                                                                                                                                     
-
+                                     
 Welcome to **ClimaSphere AI**, a climate risk assessment platform that combines environmental data, AI-assisted crop damage analysis, and blockchain technology to help make agricultural damage assessments more transparent and easier to verify. 🌾🌎
          
 Built for the **IEEE ClimateChain Global Hackathon 2026** 🏆
